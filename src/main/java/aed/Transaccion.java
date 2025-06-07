@@ -1,10 +1,10 @@
 package aed;
 
 public class Transaccion implements Comparable<Transaccion> {
-    private int id;
-    private int id_comprador;
-    private int id_vendedor;
-    private int monto;
+    private final int id;
+    private final int id_comprador;
+    private final int id_vendedor;
+    private final int monto;
 
     public Transaccion(int id, int id_comprador, int id_vendedor, int monto) {
         this.id = id;
@@ -20,7 +20,7 @@ public class Transaccion implements Comparable<Transaccion> {
     public int id_comprador() {
         return id_comprador;
     }
-    
+
     public int id_vendedor() {
         return id_vendedor;
     }
@@ -28,31 +28,26 @@ public class Transaccion implements Comparable<Transaccion> {
     public int id() {
         return id;
     }
-    
+
     @Override
-    public int compareTo(Transaccion otro) {
-        if(this.monto > otro.monto){
-            return 1;
-        } else if (this.monto < otro.monto){
-            return -1;
-        } else {
-            if (this.id > otro.id) {
-                return 1; 
-            } else {
-                return -1;
-            }
+    public int compareTo(Transaccion other) {
+        if (this.monto != other.monto) {
+            return Integer.compare(other.monto, this.monto); // Mayor monto primero
         }
+        return Integer.compare(other.id, this.id); // Mayor ID en empate
     }
 
     @Override
     public boolean equals(Object otro) {
-        boolean otroEsNull = (otro == null);
-	    boolean claseDistinta = otro.getClass() != this.getClass();
-	    if (otroEsNull || claseDistinta) {
+        if (this == otro)
+            return true;
+        if (!(otro instanceof Transaccion))
             return false;
-        }
         Transaccion t = (Transaccion) otro;
-        return  this.id == t.id() && this.id_comprador == t.id_comprador() && this.id_vendedor == t.id_vendedor();
+        return this.id == t.id() &&
+                this.id_comprador == t.id_comprador() &&
+                this.id_vendedor == t.id_vendedor() &&
+                this.monto == t.monto;
     }
 
 }
