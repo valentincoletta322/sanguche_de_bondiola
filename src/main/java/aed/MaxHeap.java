@@ -11,9 +11,9 @@ public class MaxHeap<T extends Comparable<T>> {
         this.cola = listaDeElementos; // aca hay aliassing!!!
         this.cardinal = listaDeElementos.length;
 
-        //cuenta medio falopa pero ignoras las hojas, no se si nos cambia la complejidad si no lo tenemos, (PREGUNTAR)
-        for (int i = ((this.cardinal)-2)/2; i >= 0; i--){ // Hacer heapify es hacer sift down desde el final hasta la raiz
-            this.sift_down(i);
+        //cuenta medio falopa que ignoras las hojas, no se si nos cambia la complejidad si no lo tenemos (PREGUNTAR)
+        for (int i = ((this.cardinal)-2)/2; i >= 0; i--){
+            this.sift_down(i); // Hacer heapify es hacer sift down desde el final hasta la raiz
         }
     }
 
@@ -44,7 +44,7 @@ public class MaxHeap<T extends Comparable<T>> {
 
         if (cola[indice].compareTo(cola[max]) < 0){
             this.intercambiar(indice, max);
-            this.sift_down(max);
+            this.sift_down(max); // tal vez es medio polémico
         }
         return;
     }

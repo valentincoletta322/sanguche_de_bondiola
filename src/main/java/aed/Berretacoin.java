@@ -2,8 +2,18 @@ package aed;
 
 public class Berretacoin {
 
+    // private Usuarios usuarios; // haría falta esa clase?
+    private MaxHeap<Integer> heapDeSaldos;
+    // alternativa posible:
+    private Integer[] usuarios;
+
     public Berretacoin(int n_usuarios){
-        throw new UnsupportedOperationException("Implementar!");
+        this.usuarios = new Integer[n_usuarios];
+        for (int i = 0; i < n_usuarios; i++){
+            this.usuarios[i] = i+1; //ids positivos
+        }
+        // esto no funcionaría sin darle una vuelta: this.heapDeSaldos = new MaxHeap<Integer>(this.usuarios);
+        this.heapDeSaldos = new MaxHeap<Integer>(this.usuarios); // si uso el tipo primitivo no anda :(
     }
 
     public void agregarBloque(Transaccion[] transacciones){
@@ -19,7 +29,7 @@ public class Berretacoin {
     }
 
     public int maximoTenedor(){
-        throw new UnsupportedOperationException("Implementar!");
+        return this.heapDeSaldos.raiz();
     }
 
     public int montoMedioUltimoBloque(){
