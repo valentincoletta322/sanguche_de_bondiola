@@ -1,41 +1,43 @@
 package aed;
 
-public class ListaEnlazada {
-    private class Bloque {
-        Transaccion[] bloque;
-        Bloque siguiente;
+public class ListaEnlazada<T> {
 
-        Bloque(Transaccion[] bloque) {
-            this.bloque = bloque;
+    private class Nodo {
+        private T valor;
+        private Nodo siguiente;
+
+        public Nodo(T nuevoValor){
+            this.valor = nuevoValor;
             this.siguiente = null;
         }
     }
 
-    private Bloque primero;
-    private Bloque ultimo;
+    private Nodo primero;
+    private Nodo ultimo;
 
     public ListaEnlazada() {
-        primero = null;
-        ultimo = null;
+        this.primero = null;
+        this.ultimo = null;
     }
 
     // Agregar un bloque al final de la lista - O(1)
-    public void agregarBloque(Transaccion[] bloque) {
-        Bloque nuevo = new Bloque(bloque);
-        if (primero == null) {
-            primero = nuevo;
-            ultimo = nuevo;
+    public void agregar(T valor) {
+        Nodo nuevoNodo = new Nodo(valor);
+
+        if (this.primero == null) {
+            primero = nuevoNodo;
+            ultimo = nuevoNodo;
         } else {
-            ultimo.siguiente = nuevo;
-            ultimo = nuevo;
+            ultimo.siguiente = nuevoNodo;
+            ultimo = nuevoNodo;
         }
     }
 
     // Obtener el último bloque - O(1)
-    public Transaccion[] obtenerUltimoBloque() {
+    public T ultimo() {
         if (ultimo == null) {
-            return new Transaccion[0];
+            throw new RuntimeException("La lista esta vacia!");
         }
-        return ultimo.bloque;
+        return ultimo.valor;
     }
 }
