@@ -48,7 +48,7 @@ public class Bloque {
         
         for (int i = 1; i < this.transOrderedById.length; i++){
             montoTotal += this.transOrderedById[i].monto();
-            handles[i] = new Handle(i, this.transOrderedById[0].monto());
+            handles[i] = new Handle(i, this.transOrderedById[i].monto());
         }
 
         this.transaccionesHeap = new MaxHeap<Handle>(handles); // En teoria esto es O(n)?
