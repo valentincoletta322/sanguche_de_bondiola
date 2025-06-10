@@ -17,7 +17,6 @@ public class Berretacoin {
 
     public Berretacoin(int n_usuarios){
         this.usuarios = new HandleUsuarios[n_usuarios];
-        this.listaDeBloques = new ListaEnlazada<Bloque>();
         Usuario[] usuariosToHeapify = new Usuario[n_usuarios];
         for (int i = 1; i <= n_usuarios; i++){
             Usuario nuevo = new Usuario(i, 0);
@@ -37,7 +36,7 @@ public class Berretacoin {
                 usuarios[actual.id_comprador()-1].usuarioApuntado.saldo -= actual.monto();
             }
             // no anda el sift downnnn1k2j3lkj
-            // le paso un indice, debería poder pasarle la referencia, u obtener el indice de alguna manera?    
+            // le paso un indice, debería poder pasarle la referencia, u obtener el indice de alguna manera?
         }
     }
 
@@ -62,17 +61,7 @@ public class Berretacoin {
     }
 
     public static void main(String[] args){
-        Berretacoin b = new Berretacoin(10);
-        Transaccion nueva = new Transaccion(1, 0, 1, 100);
-        Transaccion otra = new Transaccion(2, 1, 3, 50);
-        Transaccion otra2 = new Transaccion(3, 1, 3, 100000);
-        Transaccion otra3 = new Transaccion(4, 1, 3, 2000);
-        Transaccion otra4 = new Transaccion(5, 1, 3, 150);
-
-        Transaccion[] ts = new Transaccion[]{nueva, otra, otra2, otra3, otra4};
-        System.out.println(ts);
-        b.agregarBloque(ts);
-        b.txMayorValorUltimoBloque();
-        System.out.println(b.txMayorValorUltimoBloque().monto());
+        Berretacoin b = new Berretacoin(1);
+        System.out.println(b.maximoTenedor());
     }
 }
