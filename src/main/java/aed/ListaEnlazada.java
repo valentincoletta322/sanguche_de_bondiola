@@ -3,7 +3,7 @@ package aed;
 public class ListaEnlazada<T> {
 
     private class Nodo {
-        private T valor;
+        private final T valor;
         private Nodo siguiente;
 
         public Nodo(T nuevoValor){
@@ -25,11 +25,10 @@ public class ListaEnlazada<T> {
         Nodo nuevoNodo = new Nodo(valor);
         if (this.primero == null) {
             primero = nuevoNodo;
-            ultimo = nuevoNodo;
         } else {
             ultimo.siguiente = nuevoNodo;
-            ultimo = nuevoNodo;
         }
+        ultimo = nuevoNodo;
     }
 
     // Obtener el último bloque - O(1)
