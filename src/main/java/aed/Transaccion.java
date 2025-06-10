@@ -29,11 +29,8 @@ public class Transaccion implements Comparable<Transaccion> {
         return id;
     }
 
-    public boolean esCreacion(){
-        if (this.id_comprador == 0){
-            return true;
-        }
-        return false;
+    public boolean esCreacion() {
+        return this.id_comprador == 0;
     }
 
     @Override

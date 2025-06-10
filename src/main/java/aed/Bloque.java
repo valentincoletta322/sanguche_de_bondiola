@@ -13,24 +13,8 @@ public class Bloque {
     private int sumaMontos;
     private int cantidadTransacciones;
 
-    // meti cambio aca
-    private static class Handle implements Comparable<Handle> {
-        private final int referencia;
-        private final Transaccion tx;
-
-        public Handle(int ref, Transaccion tx) {
-            this.referencia = ref;
-            this.tx = tx;
-        }
-
-        @Override
-        public int compareTo(Handle otro) {
-            return this.tx.compareTo(otro.tx); // Usar compareTo de Transaccion
-        }
-    }
-
     // Constructor de Bloque - O(n_b)
-    public Bloque(Transaccion[] transacciones){    // este contructor no se si esta bien A CHEQUEARRR
+    public Bloque(Transaccion[] transacciones) {    // este contructor no se si esta bien A CHEQUEARRR
         this.arrayTransacciones = Arrays.copyOf(transacciones, transacciones.length);        // agrego aca:
         this.eliminadas = new boolean[transacciones.length];
         sumaMontos = 0;
@@ -61,16 +45,6 @@ public class Bloque {
     public int cantidadTransacciones() {
         return this.cantidadTransacciones;
     }
-          
-    // lo anoto como alternativa y le preguntamos a juli si no:
-    // podríamos directamente hacerlo aca sin exponer las cosas (no cambia nada)
-    
-    /* public float montoPromedio(){
-        return this.sumaMontos/this.cantidadTransacciones; // O(1) polémico para que ande con hackearTx
-    } */
-
-    
-    // Si lo hacemos con el for se puede comentar, si lo hacemos con los metodos se puede dejar asi:
 
     // Transacciones no eliminadas - O(n_b)
     public Transaccion[] getTransacciones() {
@@ -82,6 +56,16 @@ public class Bloque {
         }
         return lista.toArray(new Transaccion[0]);
     }
+
+    // lo anoto como alternativa y le preguntamos a juli si no:
+    // podríamos directamente hacerlo aca sin exponer las cosas (no cambia nada)
+    
+    /* public float montoPromedio(){
+        return this.sumaMontos/this.cantidadTransacciones; // O(1) polémico para que ande con hackearTx
+    } */
+
+
+    // Si lo hacemos con el for se puede comentar, si lo hacemos con los metodos se puede dejar asi:
 
     // Extrae la máxima transacción - O(log n_b)
     public Transaccion hackearTx() {
@@ -95,5 +79,21 @@ public class Bloque {
             cantidadTransacciones--;
         }
         return tx;
+    }
+
+    // meti cambio aca
+    private static class Handle implements Comparable<Handle> {
+        private final int referencia;
+        private final Transaccion tx;
+
+        public Handle(int ref, Transaccion tx) {
+            this.referencia = ref;
+            this.tx = tx;
+        }
+
+        @Override
+        public int compareTo(Handle otro) {
+            return this.tx.compareTo(otro.tx); // Usar compareTo de Transaccion
+        }
     }
 }

@@ -4,14 +4,14 @@ import java.util.Arrays;
 
 // Clase genérica para MaxHeap
 public class MaxHeap<T extends Comparable<T>> {
-    private T[] cola;
+    private final T[] cola;
     private int cardinal;
 
-    public MaxHeap(T[] listaDeElementos){ 
+    public MaxHeap(T[] listaDeElementos) {
         this.cola = Arrays.copyOf(listaDeElementos, listaDeElementos.length);
         this.cardinal = listaDeElementos.length;
 
-        for (int i = (cardinal - 1) / 2; i >= 0; i--){ // Corregido el índice inicial
+        for (int i = (cardinal - 1) / 2; i >= 0; i--) { // Corregido el índice inicial
             siftDown(i); // Hacer heapify es hacer sift down desde el final hasta la raiz
         }
 
@@ -21,7 +21,7 @@ public class MaxHeap<T extends Comparable<T>> {
     }
 
     // Devuelve el máximo - O(1)
-    public T raiz(){
+    public T raiz() {
         if (cardinal == 0)
             throw new RuntimeException("No hay elementos insertados en el heap!");
         return cola[0];
@@ -29,30 +29,29 @@ public class MaxHeap<T extends Comparable<T>> {
 
     // O(log(n)) -> por que heapify es O(n)??
     // Ojo, no actualiza los índices si se usan handles
-    private void sift_down(int indice){
-        int hijoIzquierdo = 2*indice+1;
-        int hijoDerecho = 2*indice+2;
+    private void sift_down(int indice) {
+        int hijoIzquierdo = 2 * indice + 1;
+        int hijoDerecho = 2 * indice + 2;
 
-        if (hijoIzquierdo >= cardinal){
+        if (hijoIzquierdo >= cardinal) {
             return;
         }
-        
+
         int max = hijoIzquierdo;
 
-        if (hijoDerecho < this.cardinal){ // Si hay derecho, hay izquierdo
-            if (cola[hijoDerecho].compareTo(cola[hijoIzquierdo]) >= 0){
+        if (hijoDerecho < this.cardinal) { // Si hay derecho, hay izquierdo
+            if (cola[hijoDerecho].compareTo(cola[hijoIzquierdo]) >= 0) {
                 max = hijoDerecho;
             }
         }
 
-        if (cola[indice].compareTo(cola[max]) < 0){
+        if (cola[indice].compareTo(cola[max]) < 0) {
             this.intercambiar(indice, max);
             this.sift_down(max); // tal vez es medio polémico
         }
-        return;
     }
 
-    private void intercambiar(int index1, int index2){
+    private void intercambiar(int index1, int index2) {
         T aux = cola[index1];
         cola[index1] = cola[index2];
         cola[index2] = aux;

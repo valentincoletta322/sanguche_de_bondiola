@@ -3,48 +3,54 @@ package aed;
 public class Berretacoin {
     // private Usuarios usuarios; // haría falta esa clase?
 
-    private static class HandleUsuarios {
-        private final Usuario usuarioApuntado;
-        public HandleUsuarios(Usuario nuevUsuario){
-            this.usuarioApuntado = nuevUsuario;
-        }
-    }
-
     private final MaxHeap<Usuario> heapDeSaldos;
     private final ListaEnlazada<Bloque> listaDeBloques;
     // alternativa posible:
     private final HandleUsuarios[] usuarios;
-
     // Constructor - O(P)
-    public Berretacoin(int n_usuarios){
+    public Berretacoin(int n_usuarios) {
         this.usuarios = new HandleUsuarios[n_usuarios];
         Usuario[] usuariosToHeapify = new Usuario[n_usuarios];
-        for (int i = 1; i <= n_usuarios; i++){
+        for (int i = 1; i <= n_usuarios; i++) {
             Usuario nuevo = new Usuario(i, 0);
-            usuariosToHeapify[i-1] = nuevo;
-            this.usuarios[i-1] = new HandleUsuarios(nuevo);
+            usuariosToHeapify[i - 1] = nuevo;
+            this.usuarios[i - 1] = new HandleUsuarios(nuevo);
         }
         // esto no funcionaría sin darle una vuelta: this.heapDeSaldos = new MaxHeap<Integer>(this.usuarios);
         this.heapDeSaldos = new MaxHeap<>(usuariosToHeapify); // si uso el tipo primitivo no anda :(
         this.listaDeBloques = new ListaEnlazada<>();
     }
 
-// Agrega bloque - O(n_b * log P)
-public void agregarBloque(Transaccion[] transacciones) {
-    listaDeBloques.agregar(new Bloque(transacciones)); // O(n_b)
-    for (Transaccion tx : transacciones) {
-        Usuario vendedor = usuarios[tx.id_vendedor() - 1].usuarioApuntado;
-        vendedor.saldo += tx.monto();
-        heapDeSaldos.update(vendedor.heapIndex); // O(log P)
-        if (tx.id_comprador() != 0) {
-            Usuario comprador = usuarios[tx.id_comprador() - 1].usuarioApuntado;
-            comprador.saldo -= tx.monto();
-            heapDeSaldos.update(comprador.heapIndex); // O(log P)
+    public static void main(String[] args) {
+        Berretacoin b = new Berretacoin(5);
+        Transaccion tx1 = new Transaccion(1, 0, 2, 50);
+        Transaccion tx2 = new Transaccion(2, 1, 2, 100);
+        Transaccion tx3 = new Transaccion(3, 1, 2, 100);
+        Transaccion tx4 = new Transaccion(4, 1, 2, 100);
+        Transaccion tx5 = new Transaccion(5, 1, 2, 100);
+        Transaccion tx6 = new Transaccion(6, 1, 2, 100);
+        Transaccion[] txs = {tx1, tx2, tx3, tx4, tx5, tx6};
+        b.agregarBloque(txs);
+        System.out.println(b.montoMedioUltimoBloque());
+    }
+
+    // Agrega bloque - O(n_b * log P)
+    public void agregarBloque(Transaccion[] transacciones) {
+        listaDeBloques.agregar(new Bloque(transacciones)); // O(n_b)
+        for (Transaccion tx : transacciones) {
+            Usuario vendedor = usuarios[tx.id_vendedor() - 1].usuarioApuntado;
+            vendedor.saldo += tx.monto();
+            heapDeSaldos.update(vendedor.heapIndex); // O(log P)
+            if (tx.id_comprador() != 0) {
+                Usuario comprador = usuarios[tx.id_comprador() - 1].usuarioApuntado;
+                comprador.saldo -= tx.monto();
+                heapDeSaldos.update(comprador.heapIndex); // O(log P)
+            }
         }
     }
-}
+
     // Máxima transacción del último bloque - O(1)
-    public Transaccion txMayorValorUltimoBloque(){
+    public Transaccion txMayorValorUltimoBloque() {
         return listaDeBloques.ultimo().obtenerMaximo();
     }
 
@@ -81,17 +87,11 @@ public void agregarBloque(Transaccion[] transacciones) {
         }
     }
 
+    private static class HandleUsuarios {
+        private final Usuario usuarioApuntado;
 
-    public static void main(String[] args){
-        Berretacoin b = new Berretacoin(5);
-        Transaccion tx1 = new Transaccion(1, 0, 2, 50);
-        Transaccion tx2 = new Transaccion(2, 1, 2, 100);
-        Transaccion tx3 = new Transaccion(3, 1, 2, 100);
-        Transaccion tx4 = new Transaccion(4, 1, 2, 100);
-        Transaccion tx5 = new Transaccion(5, 1, 2, 100);
-        Transaccion tx6 = new Transaccion(6, 1, 2, 100);
-        Transaccion[] txs = {tx1, tx2, tx3, tx4, tx5, tx6};
-        b.agregarBloque(txs);
-        System.out.println(b.montoMedioUltimoBloque());
+        public HandleUsuarios(Usuario nuevUsuario) {
+            this.usuarioApuntado = nuevUsuario;
+        }
     }
 }

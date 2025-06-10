@@ -2,19 +2,8 @@ package aed;
 
 public class ListaEnlazada<T> {
 
-    private class Nodo {
-        private final T valor;
-        private Nodo siguiente;
-
-        public Nodo(T nuevoValor){
-            this.valor = nuevoValor;
-            this.siguiente = null;
-        }
-    }
-
     private Nodo primero;
     private Nodo ultimo;
-
     public ListaEnlazada() {
         this.primero = null;
         this.ultimo = null;
@@ -37,5 +26,15 @@ public class ListaEnlazada<T> {
             throw new RuntimeException("La lista esta vacia!");
         }
         return ultimo.valor;
+    }
+
+    private class Nodo {
+        private final T valor;
+        private Nodo siguiente;
+
+        public Nodo(T nuevoValor) {
+            this.valor = nuevoValor;
+            this.siguiente = null;
+        }
     }
 }
