@@ -43,32 +43,44 @@ public void agregarBloque(Transaccion[] transacciones) {
         }
     }
 }
-
+    // Máxima transacción del último bloque - O(1)
     public Transaccion txMayorValorUltimoBloque(){
         return listaDeBloques.ultimo().obtenerMaximo();
     }
 
-    public Transaccion[] txUltimoBloque(){
-        throw new UnsupportedOperationException("Implementar!");
+    // Transacciones del último bloque - O(n_b)
+    public Transaccion[] txUltimoBloque() {
+        return listaDeBloques.ultimo().getTransacciones();
     }
 
-    public int maximoTenedor(){
-        return this.heapDeSaldos.raiz().id;
+    // Usuario con mayor saldo - O(1)
+    public int maximoTenedor() {
+        return heapDeSaldos.raiz().id;
     }
 
-    public int montoMedioUltimoBloque(){
-        // return listaDeBloques.ultimo().montoPromedio();
-        int cantidad = listaDeBloques.ultimo().cantidadTransacciones();
-        int suma = listaDeBloques.ultimo().sumaMontos();
-        if (cantidad == 0){
-            return 0;
+    // Promedio del último bloque - O(1)
+    public int montoMedioUltimoBloque() {
+        Bloque ultimo = listaDeBloques.ultimo();
+        int cantidad = ultimo.cantidadTransacciones();
+        return cantidad == 0 ? 0 : ultimo.sumaMontos() / cantidad;
+    }
+
+    // Hackea transacción - O(log n_b + log P)
+    public void hackearTx() {
+        Bloque ultimo = listaDeBloques.ultimo();
+        Transaccion tx = ultimo.hackearTx(); // O(log n_b)
+        if (tx != null) {
+            Usuario vendedor = usuarios[tx.id_vendedor() - 1].usuarioApuntado;
+            vendedor.saldo -= tx.monto();
+            heapDeSaldos.update(vendedor.heapIndex); // O(log P)
+            if (tx.id_comprador() != 0) {
+                Usuario comprador = usuarios[tx.id_comprador() - 1].usuarioApuntado;
+                comprador.saldo += tx.monto();
+                heapDeSaldos.update(comprador.heapIndex); // O(log P)
+            }
         }
-        return suma / cantidad;
     }
 
-    public void hackearTx(){
-        throw new UnsupportedOperationException("Implementar!");
-    }
 
     public static void main(String[] args){
         Berretacoin b = new Berretacoin(5);
