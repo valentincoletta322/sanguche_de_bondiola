@@ -1,9 +1,12 @@
 package aed;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 //PERDON POR LA CANTIDAD DE COMENTARIOS DESPROLIJOS, CORRIJAN LO QUE QUIERAN <3
 // quién hubiera pensado que esta clase sería la peor de todas??
 public class Bloque {
-    
+
     private Transaccion[] arrayTransacciones;
     private MaxHeap<Handle> heapTransacciones;
     private boolean[] eliminadas; // era esto o marcar las Tx eliminadas, nadie quería esa opción :(
@@ -13,59 +16,44 @@ public class Bloque {
     // meti cambio aca
     private class Handle implements Comparable<Handle> {
         private int referencia;
-        private int monto;
-        public Handle(int nuevaReferencia, int nuevoMonto){
-            this.referencia = nuevaReferencia;
-            this.monto = nuevoMonto;
+        private Transaccion tx;
+
+        public Handle(int ref, Transaccion tx) {
+            this.referencia = ref;
+            this.tx = tx;
         }
-      
+
         @Override
-        public int compareTo(Handle otro){
-            if (this.monto > otro.monto){
-                return 1;
-            }
-            else if (this.monto < otro.monto){
-                return -1;
-            }
-            return 0;
+        public int compareTo(Handle otro) {
+            return this.tx.compareTo(otro.tx); // Usar compareTo de Transaccion
         }
     }
 
-    public Bloque(Transaccion[] transacciones, int id){    // este contructor no se si esta bien A CHEQUEARRR
-        this.arrayTransacciones = transacciones;     // O(n) acaa creo q hay aliasing (se soluciona con copy/clone, nose cual)
-        // agrego aca:
+    // Constructor de Bloque - O(n_b)
+    public Bloque(Transaccion[] transacciones, int id) {    // este contructor no se si esta bien A CHEQUEARRR
+        this.arrayTransacciones = Arrays.copyOf(transacciones, transacciones.length);        // agrego aca:
+        this.eliminadas = new boolean[transacciones.length];
         sumaMontos = 0;
-        cantidadTransacciones = this.arrayTransacciones.length;
+        cantidadTransacciones = 0;
         Handle[] handles = new Handle[transacciones.length];
-        if (this.arrayTransacciones.length > 0){
-            Transaccion primera = this.arrayTransacciones[0];
-            if (!primera.esCreacion()){
-                sumaMontos+= primera.monto();
-            } else {
-                this.cantidadTransacciones -= 1;
+        for (int i = 0; i < transacciones.length; i++) {
+            handles[i] = new Handle(i, transacciones[i]);
+            if (!transacciones[i].esCreacion()) {
+                sumaMontos += transacciones[i].monto();
+                cantidadTransacciones++;
             }
-            handles[0] = new Handle(0, primera.monto());
         }
-        for (int i = 1; i < this.arrayTransacciones.length; i++){
-            sumaMontos += transacciones[i].monto();
-            handles[i] = new Handle(i, this.arrayTransacciones[i].monto());
-        }
-
-        this.heapTransacciones = new MaxHeap<Handle>(handles);    //O(n) por heapify
-  
-        // Esta bien todo esto, pero lo comento asi lo hacemos de una en el primer for (REVISAR)
-        //this.sumaMontos = sumaTransacciones(transacciones, id);    //O(n)????? le pido q me pase el id pq si es menor a 3000, no hay q contar la de creacion
-        //this.cantidadTransacciones = cantTransacciones(transacciones, id);    //O(1) aca lo mismo q arriba con el id
-
-        this.sumaMontos = sumaTransacciones(transacciones, id);    //O(n)????? le pido q me pase el id pq si es menor a 3000, no hay q contar la de creacion
-        this.cantidadTransacciones = cantTransacciones(transacciones, id);    //O(1) aca lo mismo q arriba con el id
+        this.heapTransacciones = new MaxHeap<>(handles); // O(n_b)
     }
-    
+
     // creo con estos 3 metodos publicos garantizamos O(1) en el punto 3 y 5 (CREO)
-    public Transaccion transaccionMayorMonto() {
-        return arrayTransacciones[heapTransacciones.raiz().referencia]; // meti cambio aca
+    // creo lo mismo ~O
+    // Máxima transacción - O(1)
+    public Transaccion obtenerMaximo() {
+        if (heapTransacciones.size() == 0) return null;
+        return arrayTransacciones[heapTransacciones.raiz().referencia];
     }
-    
+
     public int sumaMontos() {
         return this.sumaMontos;
     }
@@ -101,25 +89,29 @@ public class Bloque {
         }
         return suma;
     }
-    
-    private int cantTransacciones(Transaccion[] transacciones, int id) {
-        if (transacciones.length == 0) {
-            return 0;
-        }
-        else if (id < 3000) {    //aca tmb hay q chequear como asignamos el id al bloque
-            return transacciones.length - 1;
-        }
-        else {
-            return transacciones.length;
-        }
 
+    // Transacciones no eliminadas - O(n_b)
+    public Transaccion[] getTransacciones() {
+        ArrayList<Transaccion> lista = new ArrayList<>();
+        for (int i = 0; i < arrayTransacciones.length; i++) {
+            if (!eliminadas[i]) {
+                lista.add(arrayTransacciones[i]);
+            }
+        }
+        return lista.toArray(new Transaccion[0]);
     }
 
-    public Transaccion obtenerMaximo(){
-        return this.arrayTransacciones[heapTransacciones.raiz().referencia];
+    // Extrae la máxima transacción - O(log n_b)
+    public Transaccion hackearTx() {
+        if (heapTransacciones.size() == 0) return null;
+        Handle maxHandle = heapTransacciones.extractMax();
+        int index = maxHandle.referencia;
+        eliminadas[index] = true;
+        Transaccion tx = arrayTransacciones[index];
+        if (!tx.esCreacion()) {
+            sumaMontos -= tx.monto();
+            cantidadTransacciones--;
+        }
+        return tx;
     }
-
-    //creo q nos falta un metodo publico para devolver la copia de las transacciones en el punto 4, no estoy segura
-
-
 }
