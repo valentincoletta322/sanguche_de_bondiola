@@ -23,7 +23,6 @@ public class ListaEnlazada<T> {
     // Agregar un bloque al final de la lista - O(1)
     public void agregar(T valor) {
         Nodo nuevoNodo = new Nodo(valor);
-
         if (this.primero == null) {
             primero = nuevoNodo;
             ultimo = nuevoNodo;

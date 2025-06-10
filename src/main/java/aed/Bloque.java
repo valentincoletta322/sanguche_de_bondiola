@@ -1,12 +1,12 @@
 package aed;
 
 //PERDON POR LA CANTIDAD DE COMENTARIOS DESPROLIJOS, CORRIJAN LO QUE QUIERAN <3
-
+// quién hubiera pensado que esta clase sería la peor de todas??
 public class Bloque {
     
-    private int id; // nose si lo usamos, lo puse por las dudas
     private Transaccion[] arrayTransacciones;
     private MaxHeap<Handle> heapTransacciones;
+    private boolean[] eliminadas; // era esto o marcar las Tx eliminadas, nadie quería esa opción :(
     private int sumaMontos;
     private int cantidadTransacciones;
 
