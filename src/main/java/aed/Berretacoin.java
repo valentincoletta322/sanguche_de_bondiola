@@ -25,10 +25,11 @@ public class Berretacoin {
         }
         // esto no funcionaría sin darle una vuelta: this.heapDeSaldos = new MaxHeap<Integer>(this.usuarios);
         this.heapDeSaldos = new MaxHeap<Usuario>(usuariosToHeapify); // si uso el tipo primitivo no anda :(
+        this.listaDeBloques = new ListaEnlazada<Bloque>();
     }
 
     public void agregarBloque(Transaccion[] transacciones){
-        this.listaDeBloques.agregar(new Bloque(transacciones)); // O(n)
+        this.listaDeBloques.agregar(new Bloque(transacciones, 1)); // O(n)
         for (int i = 0; i < transacciones.length; i++){
             Transaccion actual = transacciones[i];
             usuarios[actual.id_vendedor()-1].usuarioApuntado.saldo += actual.monto();
@@ -53,7 +54,13 @@ public class Berretacoin {
     }
 
     public int montoMedioUltimoBloque(){
-        throw new UnsupportedOperationException("Implementar!");
+        // return listaDeBloques.ultimo().montoPromedio();
+        int cantidad = listaDeBloques.ultimo().cantidadTransacciones();
+        int suma = listaDeBloques.ultimo().sumaMontos();
+        if (cantidad == 0){
+            return 0;
+        }
+        return suma / cantidad;
     }
 
     public void hackearTx(){
@@ -61,7 +68,15 @@ public class Berretacoin {
     }
 
     public static void main(String[] args){
-        Berretacoin b = new Berretacoin(1);
-        System.out.println(b.maximoTenedor());
+        Berretacoin b = new Berretacoin(5);
+        Transaccion tx1 = new Transaccion(1, 0, 2, 50);
+        Transaccion tx2 = new Transaccion(2, 1, 2, 100);
+        Transaccion tx3 = new Transaccion(3, 1, 2, 100);
+        Transaccion tx4 = new Transaccion(4, 1, 2, 100);
+        Transaccion tx5 = new Transaccion(5, 1, 2, 100);
+        Transaccion tx6 = new Transaccion(6, 1, 2, 100);
+        Transaccion[] txs = {tx1, tx2, tx3, tx4, tx5, tx6};
+        b.agregarBloque(txs);
+        System.out.println(b.montoMedioUltimoBloque());
     }
 }
