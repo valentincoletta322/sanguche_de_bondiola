@@ -6,21 +6,48 @@ public class Bloque {
     
     private int id; // nose si lo usamos, lo puse por las dudas
     private Transaccion[] arrayTransacciones;
-    private MaxHeap<Transaccion> heapTransacciones;
+    private MaxHeap<Handle> heapTransacciones;
     private int sumaMontos;
     private int cantidadTransacciones;
+
+
+    // meti cambio aca
+    private class Handle implements Comparable<Handle> {
+        private int referencia;
+        private int monto;
+        public Handle(int nuevaReferencia, int nuevoMonto){
+            this.referencia = nuevaReferencia;
+            this.monto = nuevoMonto;
+        }
+        @Override
+        public int compareTo(Handle otro){
+            if (this.monto > otro.monto){
+                return 1;
+            }
+            else if (this.monto < otro.monto){
+                return -1;
+            }
+            return 0;
+        }
+    }
 
     public Bloque(Transaccion[] transacciones, int id) {    // este contructor no se si esta bien A CHEQUEARRR
         this.id = id;
         this.arrayTransacciones = transacciones;    // O(n) acaa creo q hay aliasing (se soluciona con copy/clone, nose cual)
-        this.heapTransacciones = new MaxHeap<>(transacciones);    //O(n) por heapify
+        Handle[] handles = new Handle[transacciones.length];
+        for (int i = 0; i < this.arrayTransacciones.length; i++){
+            sumaMontos += this.arrayTransacciones[i].monto();
+            handles[i] = new Handle(i, this.arrayTransacciones[i].monto());
+        }
+
+        this.heapTransacciones = new MaxHeap<Handle>(handles);    //O(n) por heapify
         this.sumaMontos = sumaTransacciones(transacciones, id);    //O(n)????? le pido q me pase el id pq si es menor a 3000, no hay q contar la de creacion
         this.cantidadTransacciones = cantTransacciones(transacciones, id);    //O(1) aca lo mismo q arriba con el id
     }
     
     // creo con estos 3 metodos publicos garantizamos O(1) en el punto 3 y 5 (CREO)
     public Transaccion transaccionMayorMonto() {
-        return heapTransacciones.raiz();
+        return arrayTransacciones[heapTransacciones.raiz().referencia]; // meti cambio aca
     }
     
     public int sumaMontos() {
