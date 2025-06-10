@@ -58,6 +58,8 @@ public class MaxHeap<T extends Comparable<T>> {
         cola[index2] = aux;
     }
 
+    //hice el heap de 0 por las dudas --
+
     // Extrae el máximo - O(log n)
     public T extractMax() {
         if (cardinal == 0) throw new RuntimeException("Heap vacío");
