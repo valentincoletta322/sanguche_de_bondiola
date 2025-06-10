@@ -76,8 +76,13 @@ public class MaxHeap<T extends Comparable<T>> {
     // Actualiza la posición de un elemento - O(log n)
     public void update(int index) {
         if (index < 0 || index >= cardinal) return;
-        siftUp(index); // había que agregarlo
-        siftDown(index);
+        int parent = (index - 1) / 2;
+        if (index > 0 && cola[index].compareTo(cola[parent]) > 0) {
+            // VERIFICAR LO DE ABAJOOOOO
+            siftUp(index); // La prioridad aumentó (saldo mayor)
+        } else {
+            siftDown(index); // La prioridad disminuyó o no cambió
+        }
     }
 
     // Reordena hacia abajo - O(log n)
