@@ -14,9 +14,9 @@ public class Usuario implements Comparable<Usuario>{
     @Override
     public int compareTo(Usuario other) {
         if (this.saldo != other.saldo) {
-            return Long.compare(other.saldo, this.saldo); // Mayor saldo primero
+            return Long.compare(this.saldo, other.saldo); // Mayor saldo primero
         }
-        return Integer.compare(this.id, other.id); // Menor ID en empate
+        return Integer.compare(other.id, this.id); // Menor ID en empate
     }
 
     @Override
