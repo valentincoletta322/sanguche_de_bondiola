@@ -7,15 +7,16 @@ public class MaxHeap<T extends Comparable<T>> {
     private T[] cola;
     private int cardinal;
 
-    // Constructor que hace heapify
-    // O(n)?
     public MaxHeap(T[] listaDeElementos){ 
         this.cola = Arrays.copyOf(listaDeElementos, listaDeElementos.length);
         this.cardinal = listaDeElementos.length;
 
-        //cuenta medio falopa que ignoras las hojas, no se si nos cambia la complejidad si no lo tenemos (PREGUNTAR)
         for (int i = (cardinal - 1) / 2; i >= 0; i--){ // Corregido el índice inicial
-            sift_down(i); // Hacer heapify es hacer sift down desde el final hasta la raiz
+            siftDown(i); // Hacer heapify es hacer sift down desde el final hasta la raiz
+        }
+
+        for (int i = 0; i < cardinal; i++) {
+            updateIndex(i);
         }
     }
 
