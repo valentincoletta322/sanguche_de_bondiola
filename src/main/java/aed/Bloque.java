@@ -7,16 +7,16 @@ import java.util.Arrays;
 // quién hubiera pensado que esta clase sería la peor de todas??
 public class Bloque {
 
-    private Transaccion[] arrayTransacciones;
-    private MaxHeap<Handle> heapTransacciones;
-    private boolean[] eliminadas; // era esto o marcar las Tx eliminadas, nadie quería esa opción :(
+    private final Transaccion[] arrayTransacciones;
+    private final MaxHeap<Handle> heapTransacciones;
+    private final boolean[] eliminadas; // era esto o marcar las Tx eliminadas, nadie quería esa opción :(
     private int sumaMontos;
     private int cantidadTransacciones;
 
     // meti cambio aca
-    private class Handle implements Comparable<Handle> {
-        private int referencia;
-        private Transaccion tx;
+    private static class Handle implements Comparable<Handle> {
+        private final int referencia;
+        private final Transaccion tx;
 
         public Handle(int ref, Transaccion tx) {
             this.referencia = ref;
@@ -30,7 +30,7 @@ public class Bloque {
     }
 
     // Constructor de Bloque - O(n_b)
-    public Bloque(Transaccion[] transacciones) {    // este contructor no se si esta bien A CHEQUEARRR
+    public Bloque(Transaccion[] transacciones){    // este contructor no se si esta bien A CHEQUEARRR
         this.arrayTransacciones = Arrays.copyOf(transacciones, transacciones.length);        // agrego aca:
         this.eliminadas = new boolean[transacciones.length];
         sumaMontos = 0;
@@ -71,24 +71,6 @@ public class Bloque {
 
     
     // Si lo hacemos con el for se puede comentar, si lo hacemos con los metodos se puede dejar asi:
-
-    private int sumaTransacciones(Transaccion[] transacciones, int id) {
-        int suma = 0;
-        if (transacciones.length == 0) {
-            return 0;
-        }
-        else if (id < 3000) {    //hay q ver bien como vamos a asignar el id al bloque
-            for (int i = 1; i < transacciones.length; i++) {
-                suma = suma + transacciones[i].monto();
-            }
-        }
-        else {
-            for (int i =0; i < transacciones.length; i++) {
-                suma = suma + transacciones[i].monto();
-            }
-        }
-        return suma;
-    }
 
     // Transacciones no eliminadas - O(n_b)
     public Transaccion[] getTransacciones() {
