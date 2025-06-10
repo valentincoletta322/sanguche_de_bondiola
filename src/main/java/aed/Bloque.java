@@ -18,7 +18,7 @@ public class Bloque {
             this.referencia = nuevaReferencia;
             this.monto = nuevoMonto;
         }
-
+      
         @Override
         public int compareTo(Handle otro){
             if (this.monto > otro.monto){
@@ -53,10 +53,18 @@ public class Bloque {
         }
 
         this.heapTransacciones = new MaxHeap<Handle>(handles);    //O(n) por heapify
+  
         // Esta bien todo esto, pero lo comento asi lo hacemos de una en el primer for (REVISAR)
         //this.sumaMontos = sumaTransacciones(transacciones, id);    //O(n)????? le pido q me pase el id pq si es menor a 3000, no hay q contar la de creacion
         //this.cantidadTransacciones = cantTransacciones(transacciones, id);    //O(1) aca lo mismo q arriba con el id
 
+        this.sumaMontos = sumaTransacciones(transacciones, id);    //O(n)????? le pido q me pase el id pq si es menor a 3000, no hay q contar la de creacion
+        this.cantidadTransacciones = cantTransacciones(transacciones, id);    //O(1) aca lo mismo q arriba con el id
+    }
+    
+    // creo con estos 3 metodos publicos garantizamos O(1) en el punto 3 y 5 (CREO)
+    public Transaccion transaccionMayorMonto() {
+        return arrayTransacciones[heapTransacciones.raiz().referencia]; // meti cambio aca
     }
     
     public int sumaMontos() {
@@ -66,7 +74,7 @@ public class Bloque {
     public int cantidadTransacciones() {
         return this.cantidadTransacciones;
     }
-    
+          
     // lo anoto como alternativa y le preguntamos a juli si no:
     // podríamos directamente hacerlo aca sin exponer las cosas (no cambia nada)
     
@@ -76,6 +84,7 @@ public class Bloque {
 
     
     // Si lo hacemos con el for se puede comentar, si lo hacemos con los metodos se puede dejar asi:
+
     private int sumaTransacciones(Transaccion[] transacciones, int id) {
         int suma = 0;
         if (transacciones.length == 0) {
@@ -106,12 +115,12 @@ public class Bloque {
         }
 
     }
-    
 
     public Transaccion obtenerMaximo(){
         return this.arrayTransacciones[heapTransacciones.raiz().referencia];
     }
 
     //creo q nos falta un metodo publico para devolver la copia de las transacciones en el punto 4, no estoy segura
+
 
 }
