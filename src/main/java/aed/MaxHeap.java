@@ -1,5 +1,7 @@
 package aed;
 
+import java.util.Arrays;
+
 // Clase genérica para MaxHeap
 public class MaxHeap<T extends Comparable<T>> {
     private T[] cola;
@@ -8,7 +10,7 @@ public class MaxHeap<T extends Comparable<T>> {
     // Constructor que hace heapify
     // O(n)?
     public MaxHeap(T[] listaDeElementos){ 
-        this.cola = listaDeElementos; // aca hay aliassing!!!
+        this.cola = Arrays.copyOf(listaDeElementos, listaDeElementos.length);
         this.cardinal = listaDeElementos.length;
 
         //cuenta medio falopa que ignoras las hojas, no se si nos cambia la complejidad si no lo tenemos (PREGUNTAR)
