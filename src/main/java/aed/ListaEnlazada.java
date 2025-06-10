@@ -4,6 +4,7 @@ public class ListaEnlazada<T> {
 
     private Nodo primero;
     private Nodo ultimo;
+
     public ListaEnlazada() {
         this.primero = null;
         this.ultimo = null;

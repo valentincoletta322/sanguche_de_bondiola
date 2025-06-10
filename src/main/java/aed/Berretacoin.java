@@ -7,6 +7,7 @@ public class Berretacoin {
     private final ListaEnlazada<Bloque> listaDeBloques;
     // alternativa posible:
     private final HandleUsuarios[] usuarios;
+
     // Constructor - O(P)
     public Berretacoin(int n_usuarios) {
         this.usuarios = new HandleUsuarios[n_usuarios];

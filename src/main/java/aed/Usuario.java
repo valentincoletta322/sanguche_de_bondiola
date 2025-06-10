@@ -1,6 +1,7 @@
 package aed;
 
 public class Usuario implements Comparable<Usuario> {
+    public static final int notInHeap = -1;
     public int id;
     public long saldo;
     public int heapIndex; // índice en el heap
@@ -8,7 +9,7 @@ public class Usuario implements Comparable<Usuario> {
     public Usuario(int id, long saldo) {
         this.id = id;
         this.saldo = saldo;
-        this.heapIndex = -1; // inicialmente el usuario no está en el heap
+        this.heapIndex = notInHeap; // inicialmente el usuario no está en el heap
     }
 
     @Override

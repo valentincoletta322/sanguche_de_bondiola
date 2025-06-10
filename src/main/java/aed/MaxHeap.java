@@ -57,7 +57,7 @@ public class MaxHeap<T extends Comparable<T>> {
         cola[index2] = aux;
     }
 
-    //////////////////---- HEAP ----///////////////////////
+    /// ///////////////---- HEAP ----///////////////////////
     //hice el heap de 0 por las dudas
 
     // Extrae el máximo - O(log n)
