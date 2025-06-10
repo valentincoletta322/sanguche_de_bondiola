@@ -74,6 +74,7 @@ public class MaxHeap<T extends Comparable<T>> {
     // Actualiza la posición de un elemento - O(log n)
     public void update(int index) {
         if (index < 0 || index >= cardinal) return;
+        siftUp(index); // había que agregarlo
         siftDown(index);
     }
 
@@ -94,6 +95,17 @@ public class MaxHeap<T extends Comparable<T>> {
         }
     }
 
+    private void siftUp(int index) {
+        while (index > 0) {
+            int parent = (index - 1) / 2;
+            if (cola[index].compareTo(cola[parent]) > 0) {
+                swap(index, parent);
+                index = parent;
+            } else {
+                break;
+            }
+        }
+    }
 
     // Intercambia elementos y actualiza índices
     private void swap(int i, int j) {
