@@ -2,7 +2,7 @@ package aed;
 
 public class Usuario implements Comparable<Usuario> {
     public static final int notInHeap = -1;
-    public int id;
+    public final int id;
     public long saldo;
     public int heapIndex; // índice en el heap
 
