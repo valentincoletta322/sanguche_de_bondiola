@@ -3,17 +3,17 @@ package aed;
 public class Berretacoin {
     // private Usuarios usuarios; // haría falta esa clase?
 
-    private class HandleUsuarios {
-        private Usuario usuarioApuntado;
+    private static class HandleUsuarios {
+        private final Usuario usuarioApuntado;
         public HandleUsuarios(Usuario nuevUsuario){
             this.usuarioApuntado = nuevUsuario;
         }
     }
 
-    private MaxHeap<Usuario> heapDeSaldos;
-    private ListaEnlazada<Bloque> listaDeBloques;
+    private final MaxHeap<Usuario> heapDeSaldos;
+    private final ListaEnlazada<Bloque> listaDeBloques;
     // alternativa posible:
-    private HandleUsuarios[] usuarios;
+    private final HandleUsuarios[] usuarios;
 
     // Constructor - O(P)
     public Berretacoin(int n_usuarios){
@@ -25,8 +25,8 @@ public class Berretacoin {
             this.usuarios[i-1] = new HandleUsuarios(nuevo);
         }
         // esto no funcionaría sin darle una vuelta: this.heapDeSaldos = new MaxHeap<Integer>(this.usuarios);
-        this.heapDeSaldos = new MaxHeap<Usuario>(usuariosToHeapify); // si uso el tipo primitivo no anda :(
-        this.listaDeBloques = new ListaEnlazada<Bloque>();
+        this.heapDeSaldos = new MaxHeap<>(usuariosToHeapify); // si uso el tipo primitivo no anda :(
+        this.listaDeBloques = new ListaEnlazada<>();
     }
 
 // Agrega bloque - O(n_b * log P)
