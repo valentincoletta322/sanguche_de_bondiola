@@ -30,7 +30,7 @@ public class Bloque {
     }
 
     // Constructor de Bloque - O(n_b)
-    public Bloque(Transaccion[] transacciones, int id) {    // este contructor no se si esta bien A CHEQUEARRR
+    public Bloque(Transaccion[] transacciones) {    // este contructor no se si esta bien A CHEQUEARRR
         this.arrayTransacciones = Arrays.copyOf(transacciones, transacciones.length);        // agrego aca:
         this.eliminadas = new boolean[transacciones.length];
         sumaMontos = 0;

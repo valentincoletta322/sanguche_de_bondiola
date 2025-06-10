@@ -15,6 +15,7 @@ public class Berretacoin {
     // alternativa posible:
     private HandleUsuarios[] usuarios;
 
+    // Constructor - O(P)
     public Berretacoin(int n_usuarios){
         this.usuarios = new HandleUsuarios[n_usuarios];
         Usuario[] usuariosToHeapify = new Usuario[n_usuarios];
@@ -28,18 +29,20 @@ public class Berretacoin {
         this.listaDeBloques = new ListaEnlazada<Bloque>();
     }
 
-    public void agregarBloque(Transaccion[] transacciones){
-        this.listaDeBloques.agregar(new Bloque(transacciones, 1)); // O(n)
-        for (int i = 0; i < transacciones.length; i++){
-            Transaccion actual = transacciones[i];
-            usuarios[actual.id_vendedor()-1].usuarioApuntado.saldo += actual.monto();
-            if (actual.id_comprador() != 0){
-                usuarios[actual.id_comprador()-1].usuarioApuntado.saldo -= actual.monto();
-            }
-            // no anda el sift downnnn1k2j3lkj
-            // le paso un indice, debería poder pasarle la referencia, u obtener el indice de alguna manera?
+// Agrega bloque - O(n_b * log P)
+public void agregarBloque(Transaccion[] transacciones) {
+    listaDeBloques.agregar(new Bloque(transacciones)); // O(n_b)
+    for (Transaccion tx : transacciones) {
+        Usuario vendedor = usuarios[tx.id_vendedor() - 1].usuarioApuntado;
+        vendedor.saldo += tx.monto();
+        heapDeSaldos.update(vendedor.heapIndex); // O(log P)
+        if (tx.id_comprador() != 0) {
+            Usuario comprador = usuarios[tx.id_comprador() - 1].usuarioApuntado;
+            comprador.saldo -= tx.monto();
+            heapDeSaldos.update(comprador.heapIndex); // O(log P)
         }
     }
+}
 
     public Transaccion txMayorValorUltimoBloque(){
         return listaDeBloques.ultimo().obtenerMaximo();
