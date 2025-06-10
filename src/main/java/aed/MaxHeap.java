@@ -108,7 +108,7 @@ public class MaxHeap<T extends Comparable<T>> {
                 swap(index, parent);
                 index = parent;
             } else {
-                break;
+                break; // feo feo, ver de hacerlo sin break
             }
         }
     }
