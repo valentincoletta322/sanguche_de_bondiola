@@ -32,7 +32,6 @@ public class Bloque {
     }
 
     public Bloque(Transaccion[] transacciones, int id){    // este contructor no se si esta bien A CHEQUEARRR
-        this.id = id;
         this.arrayTransacciones = transacciones;     // O(n) acaa creo q hay aliasing (se soluciona con copy/clone, nose cual)
         // agrego aca:
         sumaMontos = 0;
