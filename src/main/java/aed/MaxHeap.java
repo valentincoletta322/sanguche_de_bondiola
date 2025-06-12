@@ -25,6 +25,10 @@ public class MaxHeap<T extends Comparable<T>> {
         throw new RuntimeException("No hay elementos insertados en el heap!");
     }
 
+    public int cardinal(){
+        return this.cardinal; 
+    }
+
     // O(log(n)) -> por que heapify es O(n)??
     private void sift_down(int indice){
         int hijoIzquierdo = 2*indice+1;
@@ -54,5 +58,17 @@ public class MaxHeap<T extends Comparable<T>> {
         cola[index1] = cola[index2];
         cola[index2] = aux;
     }
+
+    public T extractMax() {
+        if (cardinal == 0) throw new RuntimeException("Heap vacío");
+        T max = cola[0];
+        cardinal--;
+        if (cardinal > 0) {
+            cola[0] = cola[cardinal];
+            sift_down(0);
+        }
+        return max;
+    }
+
 
 }
