@@ -151,7 +151,7 @@ public class MaxHeap<T extends Comparable<T>> {
      *
      * @return Cantidad de elementos
      */
-    public int size() {
+    public int cardinal() {
         return cardinal;
     }
 }
