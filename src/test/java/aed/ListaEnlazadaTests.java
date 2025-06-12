@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 
 class ListaEnlazadaTests {
 
-     @Test
+    @Test
     void nuevaListaEstaVacia() {
         ListaEnlazada<Integer> lista = new ListaEnlazada<>();
 
         assertEquals(0, lista.longitud());
     }
 
-     @Test
+    @Test
     void agregarUnElementoAtras() {
         ListaEnlazada<Boolean> lista = new ListaEnlazada<>();
 
