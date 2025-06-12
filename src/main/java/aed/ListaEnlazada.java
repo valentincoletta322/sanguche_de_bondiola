@@ -7,6 +7,7 @@ public class ListaEnlazada<T> {
     private Nodo primero;
     private Nodo ultimo;
     private int longitud;
+
     /**
      * Constructor de la lista enlazada.
      * Complejidad: O(1)
