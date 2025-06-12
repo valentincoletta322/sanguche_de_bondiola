@@ -42,7 +42,7 @@ public class Bloque {
      * @return Transacción de mayor valor
      */
     public Transaccion obtenerMaximo() {
-        if (heapTransacciones.size() == 0) return null;
+        if (heapTransacciones.cardinal() == 0) return null;
         return arrayTransacciones[heapTransacciones.raiz().referencia];
     }
 
@@ -89,7 +89,7 @@ public class Bloque {
      * @return Transacción hackeada
      */
     public Transaccion hackearTx() {
-        if (heapTransacciones.size() == 0) return null;
+        if (heapTransacciones.cardinal() == 0) return null;
         Handle maxHandle = heapTransacciones.extractMax();
         int index = maxHandle.referencia;
         eliminadas[index] = true;
