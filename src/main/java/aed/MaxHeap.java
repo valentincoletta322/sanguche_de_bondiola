@@ -1,74 +1,157 @@
 package aed;
 
-// Clase genérica para MaxHeap
+import java.util.Arrays;
+
+/**
+ * Clase genérica para un Max-Heap que mantiene el elemento máximo en la raíz.
+ * Soporta operaciones de agregar, extraer máximo y actualizar elementos.
+ *
+ * @param <T> Tipo de elementos en el heap, debe implementar Comparable<T>
+ */
 public class MaxHeap<T extends Comparable<T>> {
-    private T[] cola;
-    private int cardinal;
+    private final T[] cola; // Arreglo que almacena los elementos del heap
+    private int cardinal; // Número actual de elementos en el heap
 
-    // Constructor que hace heapify
-    // O(n)?
-    public MaxHeap(T[] listaDeElementos){ 
-        this.cola = listaDeElementos; // aca hay aliassing!!!
+    /**
+     * Constructor que crea un heap a partir de un arreglo de elementos.
+     * Complejidad: O(n), donde n es la cantidad de elementos en listaDeElementos.
+     *
+     * @param listaDeElementos Arreglo de elementos a incluir en el heap
+     */
+    public MaxHeap(T[] listaDeElementos) {
+        this.cola = Arrays.copyOf(listaDeElementos, listaDeElementos.length);
         this.cardinal = listaDeElementos.length;
-
-        //cuenta medio falopa que ignoras las hojas, no se si nos cambia la complejidad si no lo tenemos (PREGUNTAR)
-        for (int i = ((this.cardinal)-2)/2; i >= 0; i--){
-            this.sift_down(i); // Hacer heapify es hacer sift down desde el final hasta la raiz
+        // Construir el heap usando heapify (siftDown en cada nodo no hoja)
+        for (int i = (cardinal - 1) / 2; i >= 0; i--) {
+            siftDown(i);
+        }
+        // Actualizar índices para los usuarios si es necesario
+        for (int i = 0; i < cardinal; i++) {
+            updateIndex(i);
         }
     }
 
-
-    public T raiz(){
-        if (cardinal > 0){
-            return this.cola[0];
+    /**
+     * Devuelve el elemento máximo (raíz del heap).
+     * Complejidad: O(1)
+     *
+     * @return El elemento máximo del heap
+     * @throws RuntimeException si el heap está vacío
+     */
+    public T raiz() {
+        if (cardinal == 0) {
+            throw new RuntimeException("No hay elementos insertados en el heap!");
         }
-        throw new RuntimeException("No hay elementos insertados en el heap!");
+        return cola[0];
     }
 
-    public int cardinal(){
-        return this.cardinal; 
-    }
-
-    // O(log(n)) -> por que heapify es O(n)??
-    private void sift_down(int indice){
-        int hijoIzquierdo = 2*indice+1;
-        int hijoDerecho = 2*indice+2;
-
-        if (hijoIzquierdo >= cardinal){
-            return;
-        }
-        
-        int max = hijoIzquierdo;
-
-        if (hijoDerecho < this.cardinal){ // Si hay derecho, hay izquierdo
-            if (cola[hijoDerecho].compareTo(cola[hijoIzquierdo]) >= 0){
-                max = hijoDerecho;
-            }
-        }
-
-        if (cola[indice].compareTo(cola[max]) < 0){
-            this.intercambiar(indice, max);
-            this.sift_down(max); // tal vez es medio polémico
-        }
-        return;
-    }
-
-    private void intercambiar(int index1, int index2){
-        T aux = cola[index1];
-        cola[index1] = cola[index2];
-        cola[index2] = aux;
-    }
-
+    /**
+     * Extrae y devuelve el elemento máximo del heap.
+     * Complejidad: O(log n), donde n es la cantidad de elementos en el heap.
+     *
+     * @return El elemento máximo extraído
+     * @throws RuntimeException si el heap está vacío
+     */
     public T extractMax() {
-        if (cardinal == 0) throw new RuntimeException("Heap vacío");
+        if (cardinal == 0) {
+            throw new RuntimeException("Heap vacío");
+        }
         T max = cola[0];
         cardinal--;
         if (cardinal > 0) {
             cola[0] = cola[cardinal];
-            sift_down(0);
+            updateIndex(0);
+            siftDown(0);
         }
         return max;
     }
 
+    /**
+     * Actualiza la posición de un elemento en el heap después de un cambio en su valor.
+     * Complejidad: O(log n), donde n es la cantidad de elementos en el heap.
+     *
+     * @param index Índice del elemento a actualizar
+     */
+    public void update(int index) {
+        if (index < 0 || index >= cardinal) return;
+        siftUp(index);  // Subir si el valor aumentó
+        siftDown(index); // Bajar si el valor disminuyó
+    }
 
+    /**
+     * Reordena el heap hacia abajo desde el índice dado.
+     * Complejidad: O(log n)
+     *
+     * @param index Índice desde donde empezar a reordenar
+     */
+    private void siftDown(int index) {
+        int largest = index;
+        int left = 2 * index + 1;
+        int right = 2 * index + 2;
+        if (left < cardinal && cola[left].compareTo(cola[largest]) > 0) {
+            largest = left;
+        }
+        if (right < cardinal && cola[right].compareTo(cola[largest]) > 0) {
+            largest = right;
+        }
+        if (largest != index) {
+            swap(index, largest);
+            siftDown(largest);
+        }
+    }
+
+    /**
+     * Reordena el heap hacia arriba desde el índice dado.
+     * Complejidad: O(log n)
+     *
+     * @param index Índice desde donde empezar a reordenar
+     */
+    private void siftUp(int index) {
+        while (index > 0) {
+            int parent = (index - 1) / 2;
+            if (cola[index].compareTo(cola[parent]) > 0) {
+                swap(index, parent);
+                index = parent;
+            } else {
+                break;
+            }
+        }
+    }
+
+    /**
+     * Intercambia dos elementos en el heap y actualiza sus índices si son Usuarios.
+     * Complejidad: O(1)
+     *
+     * @param i Índice del primer elemento
+     * @param j Índice del segundo elemento
+     */
+    private void swap(int i, int j) {
+        T temp = cola[i];
+        cola[i] = cola[j];
+        cola[j] = temp;
+        updateIndex(i);
+        updateIndex(j);
+    }
+
+    /**
+     * Actualiza el índice en el objeto Usuario si corresponde.
+     * Complejidad: O(1)
+     *
+     * @param index Índice en el heap
+     */
+    private void updateIndex(int index) {
+        if (index < cardinal && cola[index] instanceof Usuario) {
+            ((Usuario) cola[index]).setHeapIndex(index);
+        }
+    }
+
+    /**
+     * Devuelve el número de elementos en el heap.
+     * Complejidad: O(1)
+     *
+     * @return Cantidad de elementos
+     */
+    public int size() {
+        return cardinal;
+    }
 }
