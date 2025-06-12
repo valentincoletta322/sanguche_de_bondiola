@@ -57,7 +57,7 @@ public class Bloque {
     public int cantidadTransacciones() {
         return this.cantidadTransacciones;
     }
-    
+          
     // lo anoto como alternativa y le preguntamos a juli si no:
     // podríamos directamente hacerlo aca sin exponer las cosas (no cambia nada)
     
@@ -67,6 +67,7 @@ public class Bloque {
 
     
     // Si lo hacemos con el for se puede comentar, si lo hacemos con los metodos se puede dejar asi:
+
     private int sumaTransacciones(Transaccion[] transacciones, int id) {
         int suma = 0;
         if (transacciones.length == 0) {
@@ -120,5 +121,6 @@ public class Bloque {
     }
 
     //creo q nos falta un metodo publico para devolver la copia de las transacciones en el punto 4, no estoy segura
+
 
 }
