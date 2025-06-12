@@ -5,10 +5,10 @@ public class Berretacoin {
 
     private class HandleUsuarios {
         private Usuario usuarioApuntado;
-        private MaxHeap<Usuario>.Handle handle;
+        private int referencia;
         public HandleUsuarios(Usuario nuevoUsuario){
             this.usuarioApuntado = nuevoUsuario;
-            this.handle = null;
+            this.referencia = nuevoUsuario.id-1;
         }
     }
 
@@ -29,10 +29,6 @@ public class Berretacoin {
         
         this.heapDeSaldos = new MaxHeap<Usuario>(usuariosToHeapify); // si uso el tipo primitivo no anda :(
         
-        for (int i = 0; i < n_usuarios; i++){
-            this.usuarios[i].handle = heapDeSaldos.getHandle(i); // le asigno el handle del heap a cada usuario
-        }
-        
         this.listaDeBloques = new ListaEnlazada<Bloque>();
     }
 
@@ -41,13 +37,11 @@ public class Berretacoin {
         for (int i = 0; i < transacciones.length; i++){
             Transaccion actual = transacciones[i];
             usuarios[actual.id_vendedor()-1].usuarioApuntado.saldo += actual.monto();
-
-            System.out.println(usuarios[actual.id_vendedor()-1].usuarioApuntado.saldo);
             
-            heapDeSaldos.sift_up(usuarios[actual.id_vendedor()-1].handle.referencia());
+            heapDeSaldos.sift_up(usuarios[actual.id_vendedor()-1].referencia);
             if (actual.id_comprador() != 0){
                 usuarios[actual.id_comprador()-1].usuarioApuntado.saldo -= actual.monto();
-                heapDeSaldos.sift_down(usuarios[actual.id_comprador()-1].handle.referencia());
+                heapDeSaldos.sift_down(usuarios[actual.id_comprador()-1].referencia);
             }
             
             // le paso un indice, debería poder pasarle la referencia, u obtener el indice de alguna manera?

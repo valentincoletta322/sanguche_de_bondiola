@@ -6,7 +6,7 @@ public class MaxHeap<T extends Comparable<T>> {
     private Handle[] handles;    
     private int cardinal;
 
-    public class Handle {
+    private class Handle {
         private int referencia;
         public Handle(int nuevaReferencia){
             this.referencia = nuevaReferencia;
@@ -20,6 +20,13 @@ public class MaxHeap<T extends Comparable<T>> {
             }
             throw new RuntimeException("Referencia fuera de rango!");
         }
+    }
+
+    private int obtenerReferencia(int indice) {
+        if (indice < 0 || indice >= cardinal) {
+            throw new RuntimeException("Referencia fuera de rango!");
+        }
+        return handles[indice].referencia;
     }
     
     // Constructor que hace heapify
@@ -47,15 +54,9 @@ public class MaxHeap<T extends Comparable<T>> {
         throw new RuntimeException("No hay elementos insertados en el heap!");
     }
 
-    public Handle getHandle(int indice){
-        if (indice < 0 || indice >= cardinal) {
-            throw new RuntimeException("Indice fuera de rango!");
-        }
-        return handles[indice];
-    }
-
     // O(log(n)) -> por que heapify es O(n)??
     public void sift_down(int indice){
+        indice = obtenerReferencia(indice);
         int hijoIzquierdo = 2*indice+1;
         int hijoDerecho = 2*indice+2;
 
@@ -79,17 +80,11 @@ public class MaxHeap<T extends Comparable<T>> {
     }
 
     public void sift_up(int indice){
+        indice = obtenerReferencia(indice);
         if (indice == 0){
             return;
         }
         int padre = (indice-1)/2;
-        if (cola[indice] instanceof Usuario) {
-            Usuario aux = (Usuario) cola[indice];
-            System.out.println(aux.saldo);
-            System.out.println("Con su id: " + aux.id);
-            Usuario papa = (Usuario) cola[padre];
-            System.out.println("Y su padre es: " + papa.saldo + " con id: " + papa.id);
-        }
         if (cola[indice].compareTo(cola[padre]) > 0){
             this.intercambiar(indice, padre);
             this.sift_up(padre);
@@ -110,6 +105,19 @@ public class MaxHeap<T extends Comparable<T>> {
         handles[index1].referencia = index1;
         handles[index2].referencia = index2;
 
+    }
+
+    public T extraerMax() {
+        if (cardinal == 0){
+            throw new RuntimeException("Heap vacio");
+        }
+        T max = cola[0];
+        cardinal--;
+        if (cardinal > 0) {
+            cola[0] = cola[cardinal];
+            sift_down(0);
+        }
+        return max;
     }
 
 }

@@ -4,6 +4,7 @@ public class ListaEnlazada<T> {
 
     private class Nodo {
         private T valor;
+        @SuppressWarnings("unused")
         private Nodo siguiente;
 
         public Nodo(T nuevoValor){

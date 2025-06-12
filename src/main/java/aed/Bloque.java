@@ -2,8 +2,6 @@ package aed;
 
 import java.util.ArrayList;
 
-import aed.MaxHeap.Handle;
-
 //PERDON POR LA CANTIDAD DE COMENTARIOS DESPROLIJOS, CORRIJAN LO QUE QUIERAN <3
 
 public class Bloque {
@@ -17,11 +15,11 @@ public class Bloque {
     // meti cambio aca
     private class HandleTransacciones {
         private Transaccion transaccionApuntada;
-        private MaxHeap<Transaccion>.Handle handle;
+        private int referencia;
 
         public HandleTransacciones(Transaccion nuevaTransaccion){
             this.transaccionApuntada = nuevaTransaccion;
-            this.handle = null;
+            this.referencia = nuevaTransaccion.id();
         }
     }
 
