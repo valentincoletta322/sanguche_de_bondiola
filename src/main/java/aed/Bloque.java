@@ -26,8 +26,13 @@ public class Bloque {
 
     public Bloque(Transaccion[] transacciones, int id){    // este contructor no se si esta bien A CHEQUEARRR
         this.id = id;
-        this.arrayTransacciones = transacciones;     // O(n) acaa creo q hay aliasing (se soluciona con copy/clone, nose cual)
-        // agrego aca:
+
+        this.arrayTransacciones = new Transaccion [transacciones.length]; // Pedir memoria O(n)
+        for (int i = 0; i < transacciones.length; i++) { // O(n) por el for
+            this.arrayTransacciones[i] = transacciones[i];
+        }
+
+
         sumaMontos = 0;
         cantidadTransacciones = this.arrayTransacciones.length;
         
@@ -40,13 +45,10 @@ public class Bloque {
             }
         }
         for (int i = 1; i < this.arrayTransacciones.length; i++){
-            sumaMontos += transacciones[i].monto();
+            sumaMontos += transacciones[i].monto(); // Como ya esta especificado en la consigna, no hace falta verificar que no sean de creacion.
         }
 
-        this.heapTransacciones = new MaxHeap<Transaccion>(transacciones);    //O(n) por heapify
-        // Esta bien todo esto, pero lo comento asi lo hacemos de una en el primer for (REVISAR)
-        //this.sumaMontos = sumaTransacciones(transacciones, id);    //O(n)????? le pido q me pase el id pq si es menor a 3000, no hay q contar la de creacion
-        //this.cantidadTransacciones = cantTransacciones(transacciones, id);    //O(1) aca lo mismo q arriba con el id
+        this.heapTransacciones = new MaxHeap<Transaccion>(transacciones); //O(n) por heapify
 
     }
     
@@ -64,40 +66,6 @@ public class Bloque {
     /* public float montoPromedio(){
         return this.sumaMontos/this.cantidadTransacciones; // O(1) polémico para que ande con hackearTx
     } */
-
-    
-    // Si lo hacemos con el for se puede comentar, si lo hacemos con los metodos se puede dejar asi:
-
-    private int sumaTransacciones(Transaccion[] transacciones, int id) {
-        int suma = 0;
-        if (transacciones.length == 0) {
-            return 0;
-        }
-        else if (id < 3000) {    //hay q ver bien como vamos a asignar el id al bloque
-            for (int i = 1; i < transacciones.length; i++) {
-                suma = suma + transacciones[i].monto();
-            }
-        }
-        else {
-            for (int i =0; i < transacciones.length; i++) {
-                suma = suma + transacciones[i].monto();
-            }
-        }
-        return suma;
-    }
-    
-    private int cantTransacciones(Transaccion[] transacciones, int id) {
-        if (transacciones.length == 0) {
-            return 0;
-        }
-        else if (id < 3000) {    //aca tmb hay q chequear como asignamos el id al bloque
-            return transacciones.length - 1;
-        }
-        else {
-            return transacciones.length;
-        }
-
-    }
     
     public Transaccion[] obtenerTransacciones(){
         ArrayList<Transaccion> transacciones = new ArrayList<>(this.cantidadTransacciones);
@@ -118,6 +86,37 @@ public class Bloque {
 
     public Transaccion obtenerMaximo(){
         return heapTransacciones.raiz();
+    }
+
+    // Aprovecho que esta ordenado el array y lo encuentro en log(n) en peor caso.
+    public int encontrarTransaccion(Transaccion transaccionBuscada){
+        int max = 0;
+        int min = this.arrayTransacciones.length - 1;
+        
+        while (max <= min) {
+            int medio = (max + min) / 2; // redondea para abajo
+            Transaccion actual = this.arrayTransacciones[medio];
+            if (actual.equals(transaccionBuscada)) {
+                return medio; // Encontré la transacción
+            } else if (actual.id() < transaccionBuscada.id()) {
+                max = medio + 1; // Busco en la mitad derecha
+            } else {
+                min = medio - 1; // Busco en la mitad izquierda
+            }
+
+        }
+        throw new RuntimeException("Transaccion no encontrada en el bloque!");
+    }
+
+    public Transaccion extraerMaximaTransaccion() {
+        if (this.arrayTransacciones.length == 0) {
+            throw new RuntimeException("No hay transacciones en el bloque!");
+        }
+        return this.heapTransacciones.extraerMax();
+    }
+
+    public void toto_caputo(int posicionEnArray){
+        this.arrayTransacciones[posicionEnArray] = null;
     }
 
     //creo q nos falta un metodo publico para devolver la copia de las transacciones en el punto 4, no estoy segura

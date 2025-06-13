@@ -1,8 +1,8 @@
 package aed;
 
 public class Usuario implements Comparable<Usuario>{
-    public int id;
-    public long saldo;
+    private int id;
+    private long saldo;
 
    public Usuario(int id, long saldo){
        this.id = id;
@@ -12,6 +12,14 @@ public class Usuario implements Comparable<Usuario>{
    public long getSaldo(){
          return this.saldo;
    }
+
+   public int getId(){
+         return this.id;
+    }
+
+   public void setSaldo(long nuevoSaldo){
+         this.saldo = nuevoSaldo;
+    }
 
     @Override
     public int compareTo(Usuario other) {

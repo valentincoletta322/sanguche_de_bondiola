@@ -8,7 +8,7 @@ public class Berretacoin {
         private int referencia;
         public HandleUsuarios(Usuario nuevoUsuario){
             this.usuarioApuntado = nuevoUsuario;
-            this.referencia = nuevoUsuario.id-1;
+            this.referencia = nuevoUsuario.getId()-1;
         }
     }
 
@@ -36,15 +36,7 @@ public class Berretacoin {
         this.listaDeBloques.agregar(new Bloque(transacciones, 1)); // O(n)
         for (int i = 0; i < transacciones.length; i++){
             Transaccion actual = transacciones[i];
-            usuarios[actual.id_vendedor()-1].usuarioApuntado.saldo += actual.monto();
-            
-            heapDeSaldos.sift_up(usuarios[actual.id_vendedor()-1].referencia);
-            if (actual.id_comprador() != 0){
-                usuarios[actual.id_comprador()-1].usuarioApuntado.saldo -= actual.monto();
-                heapDeSaldos.sift_down(usuarios[actual.id_comprador()-1].referencia);
-            }
-            
-            // le paso un indice, debería poder pasarle la referencia, u obtener el indice de alguna manera?
+            actualizarSaldos(actual);
         }
     }
 
@@ -57,7 +49,7 @@ public class Berretacoin {
     }
 
     public int maximoTenedor(){
-        return this.heapDeSaldos.raiz().id;
+        return this.heapDeSaldos.raiz().getId();
     }
 
     public int montoMedioUltimoBloque(){
@@ -71,29 +63,60 @@ public class Berretacoin {
     }
 
     public void hackearTx(){
-        throw new UnsupportedOperationException("Implementar!");
+        Bloque ultimoBloque = this.listaDeBloques.ultimo();
+        Transaccion maximaTransaccion = ultimoBloque.extraerMaximaTransaccion();
+        int posicionEnArray = ultimoBloque.encontrarTransaccion(maximaTransaccion);
+        ultimoBloque.toto_caputo(posicionEnArray);
+
+        // Me gustaria tener algo como actualizar saldos, pero esa recibe una transaccion
+        // Entonces, o cambia actualizar saldos, o le hacemos una foo auxiliar, o queda aca y fue
+
+        Usuario vendedorActual = usuarios[maximaTransaccion.id_vendedor()-1].usuarioApuntado;
+        vendedorActual.setSaldo(vendedorActual.getSaldo() - maximaTransaccion.monto());
+        heapDeSaldos.sift_down(usuarios[maximaTransaccion.id_vendedor()-1].referencia);
+        if (maximaTransaccion.id_comprador() != 0) {
+            Usuario compradorActual = usuarios[maximaTransaccion.id_comprador()-1].usuarioApuntado;
+            compradorActual.setSaldo(compradorActual.getSaldo() + maximaTransaccion.monto());
+            heapDeSaldos.sift_up(usuarios[maximaTransaccion.id_comprador()-1].referencia);
+        }
+    }
+
+    public void actualizarSaldos(Transaccion transaccion){
+        Usuario vendedorActual = usuarios[transaccion.id_vendedor()-1].usuarioApuntado;
+        vendedorActual.setSaldo(vendedorActual.getSaldo() + transaccion.monto());
+        
+        heapDeSaldos.sift_up(usuarios[transaccion.id_vendedor()-1].referencia);
+        if (transaccion.id_comprador() != 0){
+            Usuario compradorActual = usuarios[transaccion.id_comprador()-1].usuarioApuntado;
+            compradorActual.setSaldo(compradorActual.getSaldo() - transaccion.monto());
+            heapDeSaldos.sift_down(usuarios[transaccion.id_comprador()-1].referencia);
+        }
+
     }
 
     public static void main(String[] args){
-        Berretacoin b = new Berretacoin(3);
-        Transaccion tx1 = new Transaccion(1, 0, 2, 50);
-        Transaccion tx2 = new Transaccion(2, 2, 2, 100);
-        Transaccion tx3 = new Transaccion(3, 2, 3, 100);
-        Transaccion tx4 = new Transaccion(4, 2, 3, 100);
-        Transaccion tx5 = new Transaccion(5, 2, 3, 100);
-        Transaccion tx6 = new Transaccion(6, 2, 3, 100);
-        Transaccion[] txs = {tx1, tx2, tx3, tx4, tx5, tx6};
-        b.agregarBloque(txs);
+        Berretacoin b = new Berretacoin(4);
+        Transaccion[] transacciones = new Transaccion[] {
+            new Transaccion(0, 0, 2, 1), // 2 -> $1
+            new Transaccion(1, 2, 3, 1), // 3 -> $1
+            new Transaccion(2, 3, 4, 1) // 4 -> $1
+        };
 
-        tx1 = new Transaccion(1, 0, 1, 50);
-        tx2 = new Transaccion(2, 0, 1, 100);
-        tx3 = new Transaccion(3, 0, 1, 100);
-        tx4 = new Transaccion(4, 0, 1, 100);
-        tx5 = new Transaccion(5, 0, 1, 100);
-        tx6 = new Transaccion(6, 0, 1, 100);            
-        txs = new Transaccion[]{tx1, tx2, tx3, tx4, tx5, tx6};
-        b.agregarBloque(txs);   
+        Transaccion[] transacciones2 = new Transaccion[] {
+            new Transaccion(0, 0, 4, 1), // 4 -> $2
+            new Transaccion(1, 4, 1, 2), // 1 -> $2
+            new Transaccion(2, 1, 2, 1)  // 1 -> $1 , 2 -> $1
+        };
+        
+        b.agregarBloque(transacciones);
+        System.out.println(b.maximoTenedor());
+        b.agregarBloque(transacciones2);
         
         System.out.println(b.maximoTenedor());
+
+
+        Transaccion[] bloque = {new Transaccion(0, 0, 1, 1)};
+        b.agregarBloque(bloque);
+        b.hackearTx();        
     }
 }
