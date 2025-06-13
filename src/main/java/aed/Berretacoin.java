@@ -26,19 +26,6 @@ public class Berretacoin {
         this.listaDeBloques = new ListaEnlazada<>();
     }
 
-    public static void main(String[] args) {
-        Berretacoin b = new Berretacoin(5);
-        Transaccion tx1 = new Transaccion(1, 0, 2, 50);
-        Transaccion tx2 = new Transaccion(2, 1, 2, 100);
-        Transaccion tx3 = new Transaccion(3, 1, 2, 100);
-        Transaccion tx4 = new Transaccion(4, 1, 2, 100);
-        Transaccion tx5 = new Transaccion(5, 1, 2, 100);
-        Transaccion tx6 = new Transaccion(6, 1, 2, 100);
-        Transaccion[] txs = {tx1, tx2, tx3, tx4, tx5, tx6};
-        b.agregarBloque(txs);
-        System.out.println(b.montoMedioUltimoBloque());
-    }
-
     /**
      * Agrega un nuevo bloque de transacciones a la cadena de bloques.
      * Complejidad: O(n_b * log P), donde n_b es la cantidad de transacciones en el bloque.
@@ -46,15 +33,15 @@ public class Berretacoin {
      * @param transacciones Arreglo de transacciones del nuevo bloque
      */
     public void agregarBloque(Transaccion[] transacciones) {
-        listaDeBloques.agregar(new Bloque(transacciones));
+        listaDeBloques.agregar(new Bloque(transacciones)); // O(n_b)
         for (Transaccion tx : transacciones) {
             Usuario vendedor = usuarios[tx.id_vendedor() - 1].usuarioApuntado;
             vendedor.setSaldo(vendedor.getSaldo() + tx.monto());
-            heapDeSaldos.update(vendedor.getHeapIndex());
+            heapDeSaldos.update(vendedor.getHeapIndex()); // O(log P)
             if (tx.id_comprador() != 0) {
                 Usuario comprador = usuarios[tx.id_comprador() - 1].usuarioApuntado;
                 comprador.setSaldo(comprador.getSaldo() - tx.monto());
-                heapDeSaldos.update(comprador.getHeapIndex());
+                heapDeSaldos.update(comprador.getHeapIndex()); // O(log P)
             }
         }
     }
