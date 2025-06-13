@@ -1,5 +1,7 @@
 package aed;
 
+import java.util.NoSuchElementException;
+
 /**
  * Clase que implementa una lista enlazada simple para almacenar bloques.
  */
@@ -40,11 +42,11 @@ public class ListaEnlazada<T> {
      * Complejidad: O(1)
      *
      * @return Último elemento
-     * @throws RuntimeException si la lista está vacía
+     * @throws NoSuchElementException si la lista está vacía
      */
     public T ultimo() {
         if (ultimo == null) {
-            throw new RuntimeException("La lista esta vacia!");
+            throw new NoSuchElementException("Lista vacía");
         }
         return ultimo.valor;
     }
