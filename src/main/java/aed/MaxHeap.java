@@ -68,6 +68,9 @@ public class MaxHeap<T extends Comparable<T>> {
 
     /**
      * Actualiza la posición de un elemento en el heap después de un cambio en su valor.
+     * Esta operación es clave cuando el saldo de un usuario cambia.
+     * Llama a siftUp y siftDown para reubicar el elemento. Solo una de las dos
+     * operaciones tendrá efecto, dependiendo si el valor aumentó o disminuyó.
      * Complejidad: O(log n), donde n es la cantidad de elementos en el heap.
      *
      * @param index Índice del elemento a actualizar
