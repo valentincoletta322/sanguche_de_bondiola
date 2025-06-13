@@ -6,7 +6,7 @@ package aed;
 public class Berretacoin {
     private final MaxHeap<Usuario> heapDeSaldos; // Heap para mantener el usuario con mayor saldo
     private final ListaEnlazada<Bloque> listaDeBloques; // Lista enlazada de bloques
-    private final Usuario[] usuarios; // Arreglo de usuarios
+    private final HandleUsuarios[] usuarios; // Arreglo de handles para los usuarios
 
     /**
      * Constructor que inicializa el sistema con n_usuarios.
@@ -15,11 +15,12 @@ public class Berretacoin {
      * @param n_usuarios Cantidad de usuarios en el sistema
      */
     public Berretacoin(int n_usuarios) {
-        this.usuarios = new Usuario[n_usuarios];
+        this.usuarios = new HandleUsuarios[n_usuarios];
         Usuario[] usuariosToHeapify = new Usuario[n_usuarios];
         for (int i = 1; i <= n_usuarios; i++) {
             Usuario nuevo = new Usuario(i, 0);
-            this.usuarios[i - 1] = nuevo;
+            usuariosToHeapify[i - 1] = nuevo;
+            this.usuarios[i - 1] = new HandleUsuarios(nuevo);
         }
         this.heapDeSaldos = new MaxHeap<>(usuariosToHeapify);
         this.listaDeBloques = new ListaEnlazada<>();
@@ -34,11 +35,11 @@ public class Berretacoin {
     public void agregarBloque(Transaccion[] transacciones) {
         listaDeBloques.agregar(new Bloque(transacciones)); // O(n_b)
         for (Transaccion tx : transacciones) {
-            Usuario vendedor = usuarios[tx.id_vendedor() - 1];
+            Usuario vendedor = usuarios[tx.id_vendedor() - 1].usuarioApuntado;
             vendedor.setSaldo(vendedor.getSaldo() + tx.monto());
             heapDeSaldos.update(vendedor.getHeapIndex()); // O(log P)
             if (tx.id_comprador() != 0) {
-                Usuario comprador = usuarios[tx.id_comprador() - 1];
+                Usuario comprador = usuarios[tx.id_comprador() - 1].usuarioApuntado;
                 comprador.setSaldo(comprador.getSaldo() - tx.monto());
                 heapDeSaldos.update(comprador.getHeapIndex()); // O(log P)
             }
@@ -95,14 +96,22 @@ public class Berretacoin {
         Bloque ultimo = listaDeBloques.ultimo();
         Transaccion tx = ultimo.hackearTx(); // O(log n_b)
         if (tx != null) {
-            Usuario vendedor = usuarios[tx.id_vendedor() - 1];
+            Usuario vendedor = usuarios[tx.id_vendedor() - 1].usuarioApuntado;
             vendedor.setSaldo(vendedor.getSaldo() - tx.monto());
             heapDeSaldos.update(vendedor.getHeapIndex()); // O(log P)
             if (tx.id_comprador() != 0) {
-                Usuario comprador = usuarios[tx.id_comprador() - 1];
+                Usuario comprador = usuarios[tx.id_comprador() - 1].usuarioApuntado;
                 comprador.setSaldo(comprador.getSaldo() + tx.monto());
                 heapDeSaldos.update(comprador.getHeapIndex()); // O(log P)
             }
+        }
+    }
+
+    private static class HandleUsuarios {
+        private final Usuario usuarioApuntado;
+
+        public HandleUsuarios(Usuario nuevUsuario) {
+            this.usuarioApuntado = nuevUsuario;
         }
     }
 }
