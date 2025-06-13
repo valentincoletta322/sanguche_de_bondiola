@@ -71,6 +71,7 @@ public class Transaccion implements Comparable<Transaccion> {
      *
      * @return true si es una transacción de creación, false en caso contrario
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean esCreacion() {
         return this.id_comprador == 0;
     }
@@ -85,6 +86,7 @@ public class Transaccion implements Comparable<Transaccion> {
      */
     @Override
     public int compareTo(Transaccion other) {
+        if (other == null) throw new NullPointerException("Comparación con null");
         if (this.monto != other.monto) {
             return Integer.compare(this.monto, other.monto); // Mayor monto primero
         }
