@@ -94,15 +94,15 @@ public class Berretacoin {
      */
     public void hackearTx() {
         Bloque ultimo = listaDeBloques.ultimo();
-        Transaccion tx = ultimo.hackearTx();
+        Transaccion tx = ultimo.hackearTx(); // O(log n_b)
         if (tx != null) {
             Usuario vendedor = usuarios[tx.id_vendedor() - 1].usuarioApuntado;
             vendedor.setSaldo(vendedor.getSaldo() - tx.monto());
-            heapDeSaldos.update(vendedor.getHeapIndex());
+            heapDeSaldos.update(vendedor.getHeapIndex()); // O(log P)
             if (tx.id_comprador() != 0) {
                 Usuario comprador = usuarios[tx.id_comprador() - 1].usuarioApuntado;
                 comprador.setSaldo(comprador.getSaldo() + tx.monto());
-                heapDeSaldos.update(comprador.getHeapIndex());
+                heapDeSaldos.update(comprador.getHeapIndex()); // O(log P)
             }
         }
     }

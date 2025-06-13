@@ -15,6 +15,11 @@ public class Bloque {
 
     /**
      * Constructor del bloque.
+     * Crea una copia de las transacciones para mantener la inmutabilidad.
+     * Utiliza un MaxHeap de 'Handles' para poder encontrar la transacción de mayor valor en O(1)
+     * y extraerla en O(log n_b). El Handle contiene una referencia (índice) a la transacción
+     * en el arreglo original. También pre-calcula la suma y cantidad de transacciones para que
+     * montoMedioUltimoBloque() sea O(1).
      * Complejidad: O(n_b), donde n_b es la cantidad de transacciones.
      *
      * @param transacciones Arreglo de transacciones del bloque
@@ -84,6 +89,9 @@ public class Bloque {
 
     /**
      * Hackea la transacción de mayor valor, eliminándola del bloque y actualizando los montos.
+     * Utiliza el heap para encontrar y extraer el máximo en O(log n_b).
+     * Marca la transacción como eliminada y actualiza los totales
+     * de montos y cantidad para mantener la consistencia.
      * Complejidad: O(log n_b)
      *
      * @return Transacción hackeada
