@@ -32,7 +32,7 @@ public class Bloque {
                 cantidadTransacciones++;
             }
         }
-        this.heapTransacciones = new MaxHeap<>(handles);
+        this.heapTransacciones = new MaxHeap<>(handles); // O(n_b)
     }
 
     /**
