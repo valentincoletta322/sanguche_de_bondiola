@@ -74,6 +74,7 @@ public class MaxHeap<T extends Comparable<T>> {
      */
     public void update(int index) {
         if (index < 0 || index >= cardinal) return;
+        if (cola[index] == null) throw new NullPointerException("Elemento nulo en el heap");
         siftUp(index);  // Sube si el valor aumentó, O(log n)
         siftDown(index); // Baja si el valor disminuyó, O(log n)
     }
