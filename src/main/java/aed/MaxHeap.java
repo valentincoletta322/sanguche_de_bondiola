@@ -1,66 +1,86 @@
 package aed;
 
-// Clase genérica para MaxHeap
 public class MaxHeap<T extends Comparable<T>> {
     private T[] cola;
     private int cardinal;
 
-    // Constructor que hace heapify
-    // O(n)?
-    public MaxHeap(T[] listaDeElementos){ 
-        this.cola = listaDeElementos; // aca hay aliassing!!!
+    /**
+     * Constructor que crea un heap a partir de un arreglo de elementos.
+     * Complejidad: O(n), donde n es la cantidad de elementos en listaDeElementos.
+     *
+     * @param listaDeElementos Arreglo de elementos a incluir en el heap
+     */
+
+    public MaxHeap(T[] listaDeElementos) { 
+        this.cola = (T[]) new Comparable[listaDeElementos.length];
+        System.arraycopy(listaDeElementos, 0, this.cola, 0, listaDeElementos.length);
         this.cardinal = listaDeElementos.length;
 
-        //cuenta medio falopa que ignoras las hojas, no se si nos cambia la complejidad si no lo tenemos (PREGUNTAR)
-        for (int i = ((this.cardinal)-2)/2; i >= 0; i--){
-            this.sift_down(i); // Hacer heapify es hacer sift down desde el final hasta la raiz
+        // Heapify from bottom up - ignora las hojas
+        for (int i = (cardinal - 2) / 2; i >= 0; i--) {
+            this.sift_down(i);
         }
     }
 
-
-    public T raiz(){
-        if (cardinal > 0){
+    /**
+     * Devuelve el elemento máximo (raíz del heap).
+     * Complejidad: O(1)
+     *
+     * @return El elemento máximo del heap
+     * @throws RuntimeException si el heap está vacío
+     */
+    public T raiz() {
+        if (cardinal > 0) {
             return this.cola[0];
         }
         throw new RuntimeException("No hay elementos insertados en el heap!");
     }
 
-    public int cardinal(){
-        return this.cardinal; 
-    }
-
-    // O(log(n)) -> por que heapify es O(n)??
-    private void sift_down(int indice){
-        int hijoIzquierdo = 2*indice+1;
-        int hijoDerecho = 2*indice+2;
-
-        if (hijoIzquierdo >= cardinal){
-            return;
-        }
-        
-        int max = hijoIzquierdo;
-
-        if (hijoDerecho < this.cardinal){ // Si hay derecho, hay izquierdo
-            if (cola[hijoDerecho].compareTo(cola[hijoIzquierdo]) >= 0){
+    public void sift_down(int indice) {
+        while (true) {
+            int hijoIzquierdo = 2 * indice + 1;
+            int hijoDerecho = 2 * indice + 2;
+            
+            // si no tenemos hijo izquierdo, llegué al final
+            if (hijoIzquierdo >= cardinal) {
+                break;
+            }
+            
+            int max = hijoIzquierdo;
+            if (hijoDerecho < cardinal && cola[hijoDerecho].compareTo(cola[hijoIzquierdo]) >= 0) {
                 max = hijoDerecho;
             }
-        }
-
-        if (cola[indice].compareTo(cola[max]) < 0){
+    
+            if (cola[indice].compareTo(cola[max]) >= 0) {
+                break;
+            }
+    
             this.intercambiar(indice, max);
-            this.sift_down(max); // tal vez es medio polémico
+            indice = max;
         }
-        return;
     }
 
-    private void intercambiar(int index1, int index2){
+    public void sift_up(int indice) {
+        while (indice > 0) {
+            int padre = (indice - 1) / 2;
+            if (cola[indice].compareTo(cola[padre]) <= 0) {
+                break;
+            }
+            this.intercambiar(indice, padre);
+            indice = padre;
+        }
+    }
+
+    private void intercambiar(int index1, int index2) {
         T aux = cola[index1];
         cola[index1] = cola[index2];
         cola[index2] = aux;
     }
 
-    public T extractMax() {
-        if (cardinal == 0) throw new RuntimeException("Heap vacío");
+    public T extraerMax() {
+        if (cardinal == 0) {
+            throw new RuntimeException("Heap vacio");
+        }
         T max = cola[0];
         cardinal--;
         if (cardinal > 0) {
@@ -70,5 +90,24 @@ public class MaxHeap<T extends Comparable<T>> {
         return max;
     }
 
+    public void agregar(T elemento) {
+        if (cardinal >= cola.length) {
+            redimensionar();
+        }
+        
+        cola[cardinal] = elemento;
+        
+        sift_up(cardinal);
+        
+        cardinal++;
+    }
 
+    private void redimensionar() {
+        int nuevoTamaño = cola.length == 0 ? 1 : cola.length * 2;
+        T[] nuevaCola = (T[]) new Comparable[nuevoTamaño];
+        for (int i = 0; i < cardinal; i++) {
+            nuevaCola[i] = cola[i];
+        }
+        cola = nuevaCola;
+    }
 }
