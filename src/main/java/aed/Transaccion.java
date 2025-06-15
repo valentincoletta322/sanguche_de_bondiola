@@ -42,7 +42,6 @@ public class Transaccion implements Comparable<Transaccion> {
             return Integer.compare(this.monto, other.monto); // Mayor monto primero
         }
         return Integer.compare(this.id, other.id); // Mayor ID en empate
-        // Para transacciones tambien??
     }
 
     @Override

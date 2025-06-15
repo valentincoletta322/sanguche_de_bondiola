@@ -7,19 +7,23 @@ import java.util.ArrayList;
 public class Bloque {
     
     private int id; // nose si lo usamos, lo puse por las dudas
-    private Transaccion[] arrayTransacciones;
-    private MaxHeap<Transaccion> heapTransacciones;
+    private HandleTransacciones[] arrayTransacciones;
+    private MaxHeap<HandleTransacciones> heapTransacciones;
     private int sumaMontos;
     private int cantidadTransacciones;
 
     // meti cambio aca
-    private class HandleTransacciones {
+    private class HandleTransacciones implements Comparable<HandleTransacciones> {
         private Transaccion transaccionApuntada;
-        private int referencia;
+        private boolean enLista;
 
         public HandleTransacciones(Transaccion nuevaTransaccion){
             this.transaccionApuntada = nuevaTransaccion;
-            this.referencia = nuevaTransaccion.id();
+            this.enLista = true; 
+        }
+        @Override
+        public int compareTo(HandleTransacciones otro){
+            return this.transaccionApuntada.compareTo(otro.transaccionApuntada);
         }
     }
 
@@ -27,17 +31,18 @@ public class Bloque {
     public Bloque(Transaccion[] transacciones, int id){    // este contructor no se si esta bien A CHEQUEARRR
         this.id = id;
 
-        this.arrayTransacciones = new Transaccion [transacciones.length]; // Pedir memoria O(n)
-        for (int i = 0; i < transacciones.length; i++) { // O(n) por el for
-            this.arrayTransacciones[i] = transacciones[i];
-        }
-
-
+        this.arrayTransacciones = new HandleTransacciones[transacciones.length]; // Pedir memoria O(n)
+        
         sumaMontos = 0;
         cantidadTransacciones = this.arrayTransacciones.length;
+
+        for (int i = 0; i < transacciones.length; i++) { // O(n) por el for
+            HandleTransacciones nuevo = new HandleTransacciones(transacciones[i]);
+            this.arrayTransacciones[i] = nuevo;
+        }
         
         if (this.arrayTransacciones.length > 0){
-            Transaccion primera = this.arrayTransacciones[0];
+            Transaccion primera = this.arrayTransacciones[0].transaccionApuntada;
             if (!primera.esCreacion()){
                 sumaMontos+= primera.monto();
             } else {
@@ -48,7 +53,7 @@ public class Bloque {
             sumaMontos += transacciones[i].monto(); // Como ya esta especificado en la consigna, no hace falta verificar que no sean de creacion.
         }
 
-        this.heapTransacciones = new MaxHeap<Transaccion>(transacciones); //O(n) por heapify
+        this.heapTransacciones = new MaxHeap<HandleTransacciones>(this.arrayTransacciones);
 
     }
     
@@ -72,10 +77,9 @@ public class Bloque {
         // Con esto me aseguro de tener el espacio necesario y no tener que volver a pedir memoria
 
         for (int i = 0; i < this.arrayTransacciones.length; i++) {
-            if (this.arrayTransacciones[i] == null) {
-                continue;
+            if (this.arrayTransacciones[i].enLista) {
+                transacciones.add(this.arrayTransacciones[i].transaccionApuntada);
             }
-            transacciones.add(this.arrayTransacciones[i]);
         }
 
         // Creo que queda todo O(n) porque se suma
@@ -85,38 +89,20 @@ public class Bloque {
     }
 
     public Transaccion obtenerMaximo(){
-        return heapTransacciones.raiz();
-    }
-
-    // Aprovecho que esta ordenado el array y lo encuentro en log(n) en peor caso.
-    public int encontrarTransaccion(Transaccion transaccionBuscada){
-        int max = 0;
-        int min = this.arrayTransacciones.length - 1;
-        
-        while (max <= min) {
-            int medio = (max + min) / 2; // redondea para abajo
-            Transaccion actual = this.arrayTransacciones[medio];
-            if (actual.equals(transaccionBuscada)) {
-                return medio; // Encontré la transacción
-            } else if (actual.id() < transaccionBuscada.id()) {
-                max = medio + 1; // Busco en la mitad derecha
-            } else {
-                min = medio - 1; // Busco en la mitad izquierda
-            }
-
-        }
-        throw new RuntimeException("Transaccion no encontrada en el bloque!");
+        return heapTransacciones.raiz().transaccionApuntada;
     }
 
     public Transaccion extraerMaximaTransaccion() {
         if (this.arrayTransacciones.length == 0) {
             throw new RuntimeException("No hay transacciones en el bloque!");
         }
-        return this.heapTransacciones.extraerMax();
-    }
-
-    public void toto_caputo(int posicionEnArray){
-        this.arrayTransacciones[posicionEnArray] = null;
+        HandleTransacciones maxima = this.heapTransacciones.extraerMax();
+        maxima.enLista = false;
+        if (maxima.transaccionApuntada.id_comprador() != 0){
+            this.sumaMontos -= maxima.transaccionApuntada.monto();
+            this.cantidadTransacciones--;
+        }
+        return maxima.transaccionApuntada;
     }
 
     //creo q nos falta un metodo publico para devolver la copia de las transacciones en el punto 4, no estoy segura

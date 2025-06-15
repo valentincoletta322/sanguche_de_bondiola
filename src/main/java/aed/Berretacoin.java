@@ -65,8 +65,6 @@ public class Berretacoin {
     public void hackearTx(){
         Bloque ultimoBloque = this.listaDeBloques.ultimo();
         Transaccion maximaTransaccion = ultimoBloque.extraerMaximaTransaccion();
-        int posicionEnArray = ultimoBloque.encontrarTransaccion(maximaTransaccion);
-        ultimoBloque.toto_caputo(posicionEnArray);
 
         // Me gustaria tener algo como actualizar saldos, pero esa recibe una transaccion
         // Entonces, o cambia actualizar saldos, o le hacemos una foo auxiliar, o queda aca y fue
@@ -96,27 +94,22 @@ public class Berretacoin {
 
     public static void main(String[] args){
         Berretacoin b = new Berretacoin(4);
-        Transaccion[] transacciones = new Transaccion[] {
-            new Transaccion(0, 0, 2, 1), // 2 -> $1
-            new Transaccion(1, 2, 3, 1), // 3 -> $1
-            new Transaccion(2, 3, 4, 1) // 4 -> $1
+
+        Transaccion[] transacciones3 = new Transaccion[] {
+            new Transaccion(0, 0, 1, 1), // 1 -> $2, 2 -> $1
+            new Transaccion(1, 1, 2, 2), // 2 -> $3
+            new Transaccion(2, 2, 3, 3), // 3 -> $3
+            new Transaccion(3, 3, 1, 2), // 1 -> $2, 3 -> $1
+            new Transaccion(4, 1, 2, 1), // 1 -> $1, 2 -> $1, 3 -> $1
+            new Transaccion(5, 2, 3, 1)  // 1 -> $1, 3 -> $2
         };
 
-        Transaccion[] transacciones2 = new Transaccion[] {
-            new Transaccion(0, 0, 4, 1), // 4 -> $2
-            new Transaccion(1, 4, 1, 2), // 1 -> $2
-            new Transaccion(2, 1, 2, 1)  // 1 -> $1 , 2 -> $1
-        };
-        
-        b.agregarBloque(transacciones);
-        System.out.println(b.maximoTenedor());
-        b.agregarBloque(transacciones2);
-        
-        System.out.println(b.maximoTenedor());
 
+        b.agregarBloque(transacciones3);
+        b.hackearTx();
+        System.out.println(b.txUltimoBloque());
+        b.hackearTx();
+        System.out.println(b.txUltimoBloque());
 
-        Transaccion[] bloque = {new Transaccion(0, 0, 1, 1)};
-        b.agregarBloque(bloque);
-        b.hackearTx();        
     }
 }

@@ -26,7 +26,7 @@ public class MaxHeap<T extends Comparable<T>> {
     }
 
     private int obtenerReferencia(int indice) {
-        if (indice < 0 || indice >= cardinal) {
+        if (indice < 0 || indice >= map.length) {
             throw new RuntimeException("Referencia fuera de rango!");
         }
         return map[indice].referencia;
@@ -123,7 +123,8 @@ public class MaxHeap<T extends Comparable<T>> {
         cardinal--;
         if (cardinal > 0) {
             cola[0] = cola[cardinal];
-            sift_down(0);
+            map[cola[0].referencia].referencia = 0;
+            sift_down(cola[0].referencia);
         }
         return max;
     }
