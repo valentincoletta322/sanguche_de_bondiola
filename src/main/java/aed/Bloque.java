@@ -2,17 +2,15 @@ package aed;
 
 import java.util.ArrayList;
 
-//PERDON POR LA CANTIDAD DE COMENTARIOS DESPROLIJOS, CORRIJAN LO QUE QUIERAN <3
-
 public class Bloque {
     
-    private int id; // nose si lo usamos, lo puse por las dudas
+    private int id;
     private HandleTransacciones[] arrayTransacciones;
-    private MaxHeap<HandleTransacciones> heapTransacciones;
+    private MaxHeapActualizable<HandleTransacciones> heapTransacciones;
     private int sumaMontos;
     private int cantidadTransacciones;
 
-    // meti cambio aca
+
     private class HandleTransacciones implements Comparable<HandleTransacciones> {
         private Transaccion transaccionApuntada;
         private boolean enLista;
@@ -28,9 +26,8 @@ public class Bloque {
     }
 
 
-    public Bloque(Transaccion[] transacciones, int id){    // este contructor no se si esta bien A CHEQUEARRR
+    public Bloque(Transaccion[] transacciones, int id){
         this.id = id;
-
         this.arrayTransacciones = new HandleTransacciones[transacciones.length]; // Pedir memoria O(n)
         
         sumaMontos = 0;
@@ -53,29 +50,26 @@ public class Bloque {
             sumaMontos += transacciones[i].monto(); // Como ya esta especificado en la consigna, no hace falta verificar que no sean de creacion.
         }
 
-        this.heapTransacciones = new MaxHeap<HandleTransacciones>(this.arrayTransacciones);
+        this.heapTransacciones = new MaxHeapActualizable<HandleTransacciones>(this.arrayTransacciones);
 
     }
     
+    //O(1)
     public int sumaMontos() {
         return this.sumaMontos;
     }
-
+    //O(1)
     public int cantidadTransacciones() {
         return this.cantidadTransacciones;
     }
-          
-    // lo anoto como alternativa y le preguntamos a juli si no:
-    // podríamos directamente hacerlo aca sin exponer las cosas (no cambia nada)
     
-    /* public float montoPromedio(){
-        return this.sumaMontos/this.cantidadTransacciones; // O(1) polémico para que ande con hackearTx
-    } */
-    
+    // O(n): Recorre el array de transacciones y devuelve las que estan en la lista
     public Transaccion[] obtenerTransacciones(){
         ArrayList<Transaccion> transacciones = new ArrayList<>(this.cantidadTransacciones);
         // Con esto me aseguro de tener el espacio necesario y no tener que volver a pedir memoria
 
+
+        // O(n)
         for (int i = 0; i < this.arrayTransacciones.length; i++) {
             if (this.arrayTransacciones[i].enLista) {
                 transacciones.add(this.arrayTransacciones[i].transaccionApuntada);
@@ -92,6 +86,8 @@ public class Bloque {
         return heapTransacciones.raiz().transaccionApuntada;
     }
 
+
+    // O(log(n)): Hace extraerMax que llama a un sift_down O(log(n)), el resto es O(1)
     public Transaccion extraerMaximaTransaccion() {
         if (this.arrayTransacciones.length == 0) {
             throw new RuntimeException("No hay transacciones en el bloque!");
@@ -104,8 +100,5 @@ public class Bloque {
         }
         return maxima.transaccionApuntada;
     }
-
-    //creo q nos falta un metodo publico para devolver la copia de las transacciones en el punto 4, no estoy segura
-
 
 }

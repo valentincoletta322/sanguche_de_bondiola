@@ -12,11 +12,19 @@ public class Berretacoin {
         }
     }
 
-    private MaxHeap<Usuario> heapDeSaldos;
+    private MaxHeapActualizable<Usuario> heapDeSaldos;
     private ListaEnlazada<Bloque> listaDeBloques;
-    // alternativa posible:
+    
     private HandleUsuarios[] usuarios;
 
+
+    
+    /**
+     * Constructor que inicializa el sistema con n_usuarios.
+     * Complejidad: O(P), donde P es la cantidad de usuarios.
+     *
+     * @param n_usuarios Cantidad de usuarios en el sistema
+     */
     public Berretacoin(int n_usuarios){
         this.usuarios = new HandleUsuarios[n_usuarios];
         Usuario[] usuariosToHeapify = new Usuario[n_usuarios];
@@ -27,11 +35,18 @@ public class Berretacoin {
             this.usuarios[i-1] = new HandleUsuarios(nuevo);
         }
         
-        this.heapDeSaldos = new MaxHeap<Usuario>(usuariosToHeapify); // si uso el tipo primitivo no anda :(
+        this.heapDeSaldos = new MaxHeapActualizable<Usuario>(usuariosToHeapify); // si uso el tipo primitivo no anda :(
         
         this.listaDeBloques = new ListaEnlazada<Bloque>();
     }
 
+    
+    /**
+     * Agrega un nuevo bloque de transacciones a la cadena de bloques.
+     * Complejidad: O(n_b * log P), donde n_b es la cantidad de transacciones en el bloque.
+     *
+     * @param transacciones Arreglo de transacciones del nuevo bloque
+     */
     public void agregarBloque(Transaccion[] transacciones){
         this.listaDeBloques.agregar(new Bloque(transacciones, 1)); // O(n)
         for (int i = 0; i < transacciones.length; i++){
@@ -40,22 +55,47 @@ public class Berretacoin {
         }
     }
 
+    /**
+     * Devuelve la transacción de mayor valor del último bloque.
+     * Complejidad: O(1)
+     *
+     * @return Transacción de mayor valor
+     */
     public Transaccion txMayorValorUltimoBloque(){
         return listaDeBloques.ultimo().obtenerMaximo();
     }
 
+    /**
+     * Devuelve una copia de las transacciones del último bloque.
+     * Complejidad: O(n_b), donde n_b es la cantidad de transacciones en el bloque.
+     *
+     * @return Arreglo de transacciones del último bloque
+     */
     public Transaccion[] txUltimoBloque(){
         return listaDeBloques.ultimo().obtenerTransacciones();
     }
 
+    /**
+     * Devuelve el ID del usuario con el mayor saldo.
+     * Complejidad: O(1)
+     *
+     * @return ID del usuario con mayor saldo
+     */
     public int maximoTenedor(){
         return this.heapDeSaldos.raiz().getId();
     }
 
+    /**
+     * Devuelve el monto promedio de las transacciones no de creación del último bloque.
+     * Complejidad: O(1)
+     *
+     * @return Monto promedio o 0 si no hay transacciones
+     */
     public int montoMedioUltimoBloque(){
-        // return listaDeBloques.ultimo().montoPromedio();
+    
         int cantidad = listaDeBloques.ultimo().cantidadTransacciones();
         int suma = listaDeBloques.ultimo().sumaMontos();
+        // Obtiene todo en O(1) y hace la operación.
         if (cantidad == 0){
             return 0;
         }
@@ -64,52 +104,31 @@ public class Berretacoin {
 
     public void hackearTx(){
         Bloque ultimoBloque = this.listaDeBloques.ultimo();
-        Transaccion maximaTransaccion = ultimoBloque.extraerMaximaTransaccion();
-
-        // Me gustaria tener algo como actualizar saldos, pero esa recibe una transaccion
-        // Entonces, o cambia actualizar saldos, o le hacemos una foo auxiliar, o queda aca y fue
+        Transaccion maximaTransaccion = ultimoBloque.extraerMaximaTransaccion(); // O(log(n_b)), porque extraigo el max en O(1) y hago sift down O(log(n_b))
 
         Usuario vendedorActual = usuarios[maximaTransaccion.id_vendedor()-1].usuarioApuntado;
         vendedorActual.setSaldo(vendedorActual.getSaldo() - maximaTransaccion.monto());
-        heapDeSaldos.sift_down(usuarios[maximaTransaccion.id_vendedor()-1].referencia);
+        heapDeSaldos.sift_down(usuarios[maximaTransaccion.id_vendedor()-1].referencia); // O(log(P)), sift down en el heap de saldos
+
         if (maximaTransaccion.id_comprador() != 0) {
             Usuario compradorActual = usuarios[maximaTransaccion.id_comprador()-1].usuarioApuntado;
             compradorActual.setSaldo(compradorActual.getSaldo() + maximaTransaccion.monto());
-            heapDeSaldos.sift_up(usuarios[maximaTransaccion.id_comprador()-1].referencia);
+            heapDeSaldos.sift_up(usuarios[maximaTransaccion.id_comprador()-1].referencia); // O(log(P)), sift up en el heap de saldos
         }
     }
 
+    // Funcion auxiliar de complejidad O(log(P)), que actualiza los saldos de los usuarios involucrados en una transacción.
     public void actualizarSaldos(Transaccion transaccion){
         Usuario vendedorActual = usuarios[transaccion.id_vendedor()-1].usuarioApuntado;
         vendedorActual.setSaldo(vendedorActual.getSaldo() + transaccion.monto());
         
-        heapDeSaldos.sift_up(usuarios[transaccion.id_vendedor()-1].referencia);
+        heapDeSaldos.sift_up(usuarios[transaccion.id_vendedor()-1].referencia); // O(log(P)), sift up en el heap de saldos
         if (transaccion.id_comprador() != 0){
             Usuario compradorActual = usuarios[transaccion.id_comprador()-1].usuarioApuntado;
             compradorActual.setSaldo(compradorActual.getSaldo() - transaccion.monto());
-            heapDeSaldos.sift_down(usuarios[transaccion.id_comprador()-1].referencia);
+            heapDeSaldos.sift_down(usuarios[transaccion.id_comprador()-1].referencia); // O(log(P)), sift down en el heap de saldos
         }
 
     }
 
-    public static void main(String[] args){
-        Berretacoin b = new Berretacoin(4);
-
-        Transaccion[] transacciones3 = new Transaccion[] {
-            new Transaccion(0, 0, 1, 1), // 1 -> $2, 2 -> $1
-            new Transaccion(1, 1, 2, 2), // 2 -> $3
-            new Transaccion(2, 2, 3, 3), // 3 -> $3
-            new Transaccion(3, 3, 1, 2), // 1 -> $2, 3 -> $1
-            new Transaccion(4, 1, 2, 1), // 1 -> $1, 2 -> $1, 3 -> $1
-            new Transaccion(5, 2, 3, 1)  // 1 -> $1, 3 -> $2
-        };
-
-
-        b.agregarBloque(transacciones3);
-        b.hackearTx();
-        System.out.println(b.txUltimoBloque());
-        b.hackearTx();
-        System.out.println(b.txUltimoBloque());
-
-    }
 }
