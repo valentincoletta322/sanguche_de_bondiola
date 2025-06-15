@@ -52,8 +52,13 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
         return map[indice].referencia;
     }
     
-    // Constructor que hace heapify
-    // O(n)?
+    /**
+     * Constructor que crea un heap a partir de un arreglo de elementos.
+     * Complejidad: O(n), donde n es la cantidad de elementos en listaDeElementos.
+     *
+     * @param listaDeElementos Arreglo de elementos a incluir en el heap
+     */
+    // Complejidad O(n) ya que recorremos todos los elementos del array y los insertamos en el heap
     public MaxHeapActualizable(T[] listaDeElementos){ 
         this.cola = new MaxHeapActualizable.Handle[listaDeElementos.length];
         for (int i = 0; i < listaDeElementos.length; i++) {
@@ -67,13 +72,21 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
             this.map[i] = new Handle(listaDeElementos[i], i);
         }
 
-        //cuenta medio falopa que ignoras las hojas, no se si nos cambia la complejidad si no lo tenemos (PREGUNTAR)
+        // El algoritmo de heapify ignora las hojas y arranca desde abajo hacia arriba
+        // Entonces, la cuenta es ((this.cardinal)-2)/2 (DIVISION ENTERA), que es el padre del último elemento
         for (int i = ((this.cardinal)-2)/2; i >= 0; i--){
             this.sift_down(i); // Hacer heapify es hacer sift down desde el final hasta la raiz
         }
     }
 
 
+    /**
+     * Devuelve el elemento máximo (raíz del heap).
+     * Complejidad: O(1)
+     *
+     * @return El elemento máximo del heap
+     * @throws RuntimeException si el heap está vacío
+     */
     public T raiz(){
         if (cardinal > 0){
             return this.cola[0].valor;
@@ -81,7 +94,13 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
         throw new RuntimeException("No hay elementos insertados en el heap!");
     }
 
-    // O(log(n)) -> por que heapify es O(n)??
+
+    /**
+     * Reordena el heap hacia abajo desde el índice dado.
+     * Complejidad: O(log n)
+     *
+     * @param index Índice desde donde empezar a reordenar
+    */
     public void sift_down(int indice){
         indice = obtenerReferencia(indice);
         
@@ -108,7 +127,12 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
         }
     }
 
-    // cambio la recursion aca porque me estaba volviendo loco
+    /**
+     * Reordena el heap hacia arriba desde el índice dado.
+     * Complejidad: O(log n)
+     *
+     * @param index Índice desde donde empezar a reordenar
+     */
     public void sift_up(int indice){
         indice = obtenerReferencia(indice);
         if (indice == 0){
@@ -125,6 +149,13 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
         return;
     }
 
+    /**
+     * Intercambia dos elementos en el heap y actualiza sus índices en el mapa.
+     * Complejidad: O(1)
+     *
+     * @param index1 Índice del primer elemento
+     * @param index2 Índice del segundo elemento
+     */
     private void intercambiar(int index1, int index2){
         Handle aux = cola[index1];
         cola[index1] = cola[index2];
@@ -135,6 +166,14 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
 
     }
 
+
+    /**
+     * Extrae y devuelve el elemento máximo del heap.
+     * Complejidad: O(log n), donde n es la cantidad de elementos en el heap.
+     *
+     * @return El elemento máximo extraído
+     * @throws RuntimeException si el heap está vacío
+     */
     public T extractMax() {
         if (cardinal == 0){
             throw new RuntimeException("Heap vacio");

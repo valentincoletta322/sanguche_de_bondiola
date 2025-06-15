@@ -10,7 +10,7 @@ public class Bloque {
     private int sumaMontos;
     private int cantidadTransacciones;
 
-
+    // Clase para poder manejar las transacciones eliminadas por hackearTx()
     private class HandleTransacciones implements Comparable<HandleTransacciones> {
         private Transaccion transaccionApuntada;
         private boolean enLista;
@@ -33,25 +33,22 @@ public class Bloque {
         sumaMontos = 0;
         cantidadTransacciones = this.arrayTransacciones.length;
 
-        for (int i = 0; i < transacciones.length; i++) { // O(n) por el for
+        // O(n): Recorremos todas las transacciones y creamos un HandleTransacciones para cada una.
+        for (int i = 0; i < transacciones.length; i++) { 
             HandleTransacciones nuevo = new HandleTransacciones(transacciones[i]);
             this.arrayTransacciones[i] = nuevo;
+            // Como queremos obtener el medio en O(1), aprovechamos el recorrido para sumar los montos
+            sumaMontos += transacciones[i].monto();
         }
-        
+        // Restamos en caso de que exista una de creacion
         if (this.arrayTransacciones.length > 0){
             Transaccion primera = this.arrayTransacciones[0].transaccionApuntada;
-            if (!primera.esCreacion()){
-                sumaMontos+= primera.monto();
-            } else {
+            if (primera.esCreacion()){
+                sumaMontos-= primera.monto();
                 this.cantidadTransacciones -= 1;
             }
         }
-        for (int i = 1; i < this.arrayTransacciones.length; i++){
-            sumaMontos += transacciones[i].monto(); // Como ya esta especificado en la consigna, no hace falta verificar que no sean de creacion.
-        }
-
-        this.heapTransacciones = new MaxHeapActualizable<HandleTransacciones>(this.arrayTransacciones);
-
+        this.heapTransacciones = new MaxHeapActualizable<HandleTransacciones>(this.arrayTransacciones); // O(n)
     }
     
     //O(1)
@@ -76,7 +73,7 @@ public class Bloque {
             }
         }
 
-        // Creo que queda todo O(n) porque se suma
+        // Sumando las complejidades:  O(n) + O(n) = O(2n) => O(n)
         Transaccion[] toArray = new Transaccion[transacciones.size()];
         toArray = transacciones.toArray(toArray);
         return toArray;
@@ -92,7 +89,7 @@ public class Bloque {
         if (this.arrayTransacciones.length == 0) {
             throw new RuntimeException("No hay transacciones en el bloque!");
         }
-        HandleTransacciones maxima = this.heapTransacciones.extractMax();
+        HandleTransacciones maxima = this.heapTransacciones.extractMax(); // O(log(n))
         maxima.enLista = false;
         if (maxima.transaccionApuntada.id_comprador() != 0){
             this.sumaMontos -= maxima.transaccionApuntada.monto();

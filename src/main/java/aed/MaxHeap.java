@@ -4,6 +4,13 @@ public class MaxHeap<T extends Comparable<T>> {
     private T[] cola;
     private int cardinal;
 
+    /**
+     * Constructor que crea un heap a partir de un arreglo de elementos.
+     * Complejidad: O(n), donde n es la cantidad de elementos en listaDeElementos.
+     *
+     * @param listaDeElementos Arreglo de elementos a incluir en el heap
+     */
+
     public MaxHeap(T[] listaDeElementos) { 
         this.cola = (T[]) new Comparable[listaDeElementos.length];
         System.arraycopy(listaDeElementos, 0, this.cola, 0, listaDeElementos.length);
@@ -15,6 +22,13 @@ public class MaxHeap<T extends Comparable<T>> {
         }
     }
 
+    /**
+     * Devuelve el elemento máximo (raíz del heap).
+     * Complejidad: O(1)
+     *
+     * @return El elemento máximo del heap
+     * @throws RuntimeException si el heap está vacío
+     */
     public T raiz() {
         if (cardinal > 0) {
             return this.cola[0];
