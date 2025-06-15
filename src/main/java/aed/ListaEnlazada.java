@@ -15,10 +15,12 @@ public class ListaEnlazada<T> {
 
     private Nodo primero;
     private Nodo ultimo;
+    private int longitud;
 
     public ListaEnlazada() {
         this.primero = null;
         this.ultimo = null;
+        this.longitud = 0;
     }
 
     // Agregar un bloque al final de la lista - O(1)
@@ -32,6 +34,7 @@ public class ListaEnlazada<T> {
             ultimo.siguiente = nuevoNodo;
             ultimo = nuevoNodo;
         }
+        this.longitud += 1;
     }
 
     // Obtener el último bloque - O(1)
@@ -40,5 +43,18 @@ public class ListaEnlazada<T> {
             throw new RuntimeException("La lista esta vacia!");
         }
         return ultimo.valor;
+    }
+
+    public int longitud() {
+        return this.longitud; 
+    }
+
+    public T obtener(int i) {
+        Nodo res = this.primero;
+        for (int n=0; n < i; n++){
+            res = res.siguiente;
+        }
+
+        return res.valor; 
     }
 }

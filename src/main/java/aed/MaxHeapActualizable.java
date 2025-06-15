@@ -135,7 +135,7 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
 
     }
 
-    public T extraerMax() {
+    public T extractMax() {
         if (cardinal == 0){
             throw new RuntimeException("Heap vacio");
         }
@@ -147,6 +147,10 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
             sift_down(cola[0].referencia);
         }
         return max;
+    }
+
+    public int cardinal() {
+        return cardinal;
     }
 
     public void redimensionar() {

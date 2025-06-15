@@ -92,7 +92,7 @@ public class Bloque {
         if (this.arrayTransacciones.length == 0) {
             throw new RuntimeException("No hay transacciones en el bloque!");
         }
-        HandleTransacciones maxima = this.heapTransacciones.extraerMax();
+        HandleTransacciones maxima = this.heapTransacciones.extractMax();
         maxima.enLista = false;
         if (maxima.transaccionApuntada.id_comprador() != 0){
             this.sumaMontos -= maxima.transaccionApuntada.monto();
