@@ -34,14 +34,11 @@ public class Bloque {
             sumaMontos += transacciones[i].monto();
         }
         // Restamos en caso de que exista una de creacion
-        if (this.arrayTransacciones.length > 0) {
-            Transaccion primera = this.arrayTransacciones[0].transaccionApuntada;
-            if (primera.esCreacion()) {
-                sumaMontos -= primera.monto();
-                this.cantidadTransacciones -= 1;
-            }
+        if (transacciones.length > 0 && this.arrayTransacciones[0].transaccionApuntada.esCreacion()) {
+            sumaMontos -= transacciones[0].monto();
+            this.cantidadTransacciones -= 1;
         }
-        this.heapTransacciones = new MaxHeapActualizable<HandleTransacciones>(this.arrayTransacciones); // O(n)
+        this.heapTransacciones = new MaxHeapActualizable<>(this.arrayTransacciones); // O(n)
     }
 
     /**
