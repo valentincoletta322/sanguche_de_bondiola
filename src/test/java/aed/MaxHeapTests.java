@@ -9,27 +9,27 @@ import java.util.Random;
 
 class MaxHeapTests {
 
-    @Test 
+    @Test
     void heapVacio() {
-        MaxHeap<Integer> heap = new MaxHeap<>(new Integer[] {}); 
+        MaxHeap<Integer> heap = new MaxHeap<>(new Integer[] {});
 
         assertEquals(0, heap.cardinal());
 
     }
 
-    @Test 
+    @Test
     void agregarUnElemento () {
-        MaxHeap<Integer> heap = new MaxHeap<>(new Integer[] {1}); 
+        MaxHeap<Integer> heap = new MaxHeap<>(new Integer[] {1});
 
         assertEquals(1, heap.cardinal());
         assertEquals(1, heap.raiz());
 
     }
 
-    @Test 
+    @Test
     void agregarElementosCreciente (){
         Integer[] elementos = {1,2,3,4,5};
-        MaxHeap<Integer> heap = new MaxHeap<>(elementos); 
+        MaxHeap<Integer> heap = new MaxHeap<>(elementos);
 
         assertEquals(5,heap.cardinal());
         assertEquals(5, heap.raiz());
@@ -49,10 +49,10 @@ class MaxHeapTests {
 
     }
 
-    @Test 
+    @Test
     void agregarElementosDecreciente (){
         Integer[] elementos = {5,4,3,2,1};
-        MaxHeap<Integer> heap = new MaxHeap<>(elementos); 
+        MaxHeap<Integer> heap = new MaxHeap<>(elementos);
 
         assertEquals(5,heap.cardinal());
         assertEquals(5, heap.raiz());
@@ -69,13 +69,13 @@ class MaxHeapTests {
         assertEquals(1,heap.cardinal());
         assertEquals(1, heap.raiz());
         heap.extractMax();
-        
-        }
-    
-    @Test 
+
+    }
+
+    @Test
     void agregarElementosDesordenados (){
         Integer[] elementos = {15,23,2,8,100};
-        MaxHeap<Integer> heap = new MaxHeap<>(elementos); 
+        MaxHeap<Integer> heap = new MaxHeap<>(elementos);
 
         assertEquals(5,heap.cardinal());
         assertEquals(100, heap.raiz());
@@ -93,13 +93,13 @@ class MaxHeapTests {
         assertEquals(2, heap.raiz());
         heap.extractMax();
 
-        }
+    }
 
-//Agrega los dos duplicados, creo que esta bien pero por las dudas revisar
-    @Test 
+    //Agrega los dos duplicados, creo que esta bien pero por las dudas revisar
+    @Test
     void agregarElementosDuplicados(){
         Integer[] elementos = {15,23,100,8,100};
-        MaxHeap<Integer> heap = new MaxHeap<>(elementos); 
+        MaxHeap<Integer> heap = new MaxHeap<>(elementos);
 
         assertEquals(5,heap.cardinal());
         assertEquals(100, heap.raiz());
@@ -117,7 +117,7 @@ class MaxHeapTests {
         assertEquals(8, heap.raiz());
         heap.extractMax();
 
-        }
+    }
 
     //Creo que clave devuelve numeros medio aletorios pero estaria bueno mirarlo un poco mas
 
@@ -126,12 +126,12 @@ class MaxHeapTests {
     private Integer clave(Integer i) {
         return NCLAVES * ((i * i - 100 * i) % NCLAVES) + i;
     }
-    
+
 
     @Test
     void agregarMuchosElementos() {
         Integer[] elementos = new Integer[NCLAVES];
-        
+
 
         for(Integer i=0; i < NCLAVES; i++ ){
             Integer k = clave(i);
@@ -156,5 +156,4 @@ class MaxHeapTests {
 
 
 }
-
 

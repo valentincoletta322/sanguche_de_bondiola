@@ -10,8 +10,8 @@ public class MaxHeap<T extends Comparable<T>> {
      *
      * @param listaDeElementos Arreglo de elementos a incluir en el heap
      */
-
-    public MaxHeap(T[] listaDeElementos) { 
+    @SuppressWarnings("unchecked")
+    public MaxHeap(T[] listaDeElementos) {
         this.cola = (T[]) new Comparable[listaDeElementos.length];
         System.arraycopy(listaDeElementos, 0, this.cola, 0, listaDeElementos.length);
         this.cardinal = listaDeElementos.length;
@@ -40,25 +40,30 @@ public class MaxHeap<T extends Comparable<T>> {
         while (true) {
             int hijoIzquierdo = 2 * indice + 1;
             int hijoDerecho = 2 * indice + 2;
-            
+
             // si no tenemos hijo izquierdo, llegué al final
             if (hijoIzquierdo >= cardinal) {
                 break;
             }
-            
+
             int max = hijoIzquierdo;
             if (hijoDerecho < cardinal && cola[hijoDerecho].compareTo(cola[hijoIzquierdo]) >= 0) {
                 max = hijoDerecho;
             }
-    
+
             if (cola[indice].compareTo(cola[max]) >= 0) {
                 break;
             }
-    
+
             this.intercambiar(indice, max);
             indice = max;
         }
     }
+
+    public int cardinal() {
+        return cardinal;
+    }
+
 
     public void sift_up(int indice) {
         while (indice > 0) {
@@ -77,7 +82,7 @@ public class MaxHeap<T extends Comparable<T>> {
         cola[index2] = aux;
     }
 
-    public T extraerMax() {
+    public T extractMax() {
         if (cardinal == 0) {
             throw new RuntimeException("Heap vacio");
         }
@@ -94,20 +99,19 @@ public class MaxHeap<T extends Comparable<T>> {
         if (cardinal >= cola.length) {
             redimensionar();
         }
-        
+
         cola[cardinal] = elemento;
-        
+
         sift_up(cardinal);
-        
+
         cardinal++;
     }
 
+    @SuppressWarnings("unchecked")
     private void redimensionar() {
-        int nuevoTamaño = cola.length == 0 ? 1 : cola.length * 2;
-        T[] nuevaCola = (T[]) new Comparable[nuevoTamaño];
-        for (int i = 0; i < cardinal; i++) {
-            nuevaCola[i] = cola[i];
-        }
+        int nuevoTamanio = cola.length == 0 ? 1 : cola.length * 2;
+        T[] nuevaCola = (T[]) new Comparable[nuevoTamanio];
+        if (cardinal >= 0) System.arraycopy(cola, 0, nuevaCola, 0, cardinal);
         cola = nuevaCola;
     }
 }

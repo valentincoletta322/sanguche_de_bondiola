@@ -5,8 +5,8 @@ package aed;
  * Clase que representa a un usuario en el sistema Berretacoin.
  * Cada usuario tiene un ID y un saldo.
  */
-public class Usuario implements Comparable<Usuario>{
-    private int id;
+public class Usuario implements Comparable<Usuario> {
+    private final int id;
     private long saldo;
 
     /**
@@ -15,10 +15,10 @@ public class Usuario implements Comparable<Usuario>{
      * @param id    ID único del usuario
      * @param saldo Saldo inicial del usuario
      */
-   public Usuario(int id, long saldo){
-       this.id = id;
-       this.saldo = saldo;
-   }
+    public Usuario(int id, long saldo) {
+        this.id = id;
+        this.saldo = saldo;
+    }
 
     /**
      * Devuelve el saldo del usuario.
@@ -26,20 +26,9 @@ public class Usuario implements Comparable<Usuario>{
      *
      * @return Saldo del usuario
      */
-   public long getSaldo(){
-         return this.saldo;
-   }
-
-    /**
-     * Devuelve el ID del usuario.
-     * Complejidad: O(1)
-     *
-     * @return ID del usuario
-     */
-   public int getId(){
-         return this.id;
+    public long getSaldo() {
+        return this.saldo;
     }
-
 
     /**
      * Establece el saldo del usuario.
@@ -47,8 +36,18 @@ public class Usuario implements Comparable<Usuario>{
      *
      * @param nuevoSaldo Nuevo saldo del usuario
      */
-   public void setSaldo(long nuevoSaldo){
-         this.saldo = nuevoSaldo;
+    public void setSaldo(long nuevoSaldo) {
+        this.saldo = nuevoSaldo;
+    }
+
+    /**
+     * Devuelve el ID del usuario.
+     * Complejidad: O(1)
+     *
+     * @return ID del usuario
+     */
+    public int getId() {
+        return this.id;
     }
 
     /**
@@ -66,8 +65,8 @@ public class Usuario implements Comparable<Usuario>{
         }
         return Integer.compare(other.id, this.id); // Menor ID en empate
     }
-    
-     /**
+
+    /**
      * Verifica si este usuario es igual a otro objeto. Solo comparo IDs.
      * Complejidad: O(1)
      *

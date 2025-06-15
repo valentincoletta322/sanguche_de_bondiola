@@ -26,7 +26,7 @@ public class Transaccion implements Comparable<Transaccion> {
     }
 
 
-     /**
+    /**
      * Devuelve el monto de la transacción.
      * Complejidad: O(1)
      *

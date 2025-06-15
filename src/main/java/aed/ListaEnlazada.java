@@ -1,27 +1,13 @@
 package aed;
 
-import java.util.NoSuchElementException;
-
 /**
  * Clase que implementa una lista enlazada simple para almacenar bloques.
  */
 public class ListaEnlazada<T> {
 
-    private class Nodo {
-        private T valor;
-        @SuppressWarnings("unused")
-        private Nodo siguiente;
-
-        public Nodo(T nuevoValor){
-            this.valor = nuevoValor;
-            this.siguiente = null;
-        }
-    }
-
     private Nodo primero;
     private Nodo ultimo;
     private int longitud;
-
     /**
      * Constructor de la lista enlazada.
      * Complejidad: O(1)
@@ -44,11 +30,10 @@ public class ListaEnlazada<T> {
 
         if (this.primero == null) {
             primero = nuevoNodo;
-            ultimo = nuevoNodo;
         } else {
             ultimo.siguiente = nuevoNodo;
-            ultimo = nuevoNodo;
         }
+        ultimo = nuevoNodo;
         this.longitud += 1;
     }
 
@@ -68,7 +53,7 @@ public class ListaEnlazada<T> {
     }
 
     public int longitud() {
-        return this.longitud; 
+        return this.longitud;
     }
 
     /**
@@ -80,10 +65,21 @@ public class ListaEnlazada<T> {
      */
     public T obtener(int i) {
         Nodo res = this.primero;
-        for (int n=0; n < i; n++){
+        for (int n = 0; n < i; n++) {
             res = res.siguiente;
         }
 
-        return res.valor; 
+        return res.valor;
+    }
+
+    private class Nodo {
+        private final T valor;
+        @SuppressWarnings("unused")
+        private Nodo siguiente;
+
+        public Nodo(T nuevoValor) {
+            this.valor = nuevoValor;
+            this.siguiente = null;
+        }
     }
 }

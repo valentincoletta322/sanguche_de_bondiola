@@ -27,31 +27,6 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
 
     private int cardinal;
 
-    private class Handle implements Comparable<Handle> {
-        T valor;
-        private int referencia;
-        public Handle(T valor, int nuevaReferencia){
-            this.valor = valor;
-            this.referencia = nuevaReferencia;
-        }
-        public int referencia (){
-            return this.referencia;
-        }
-        public T obtener (){
-            return this.valor;
-        }
-        public int compareTo(Handle otro) {
-            return this.valor.compareTo(otro.valor);
-        }
-    }
-
-    private int obtenerReferencia(int indice) {
-        if (indice < 0 || indice >= map.length) {
-            throw new RuntimeException("Referencia fuera de rango!");
-        }
-        return map[indice].referencia;
-    }
-    
     /**
      * Constructor que crea un heap a partir de un arreglo de elementos.
      * Complejidad: O(n), donde n es la cantidad de elementos en listaDeElementos.
@@ -59,7 +34,8 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
      * @param listaDeElementos Arreglo de elementos a incluir en el heap
      */
     // Complejidad O(n) ya que recorremos todos los elementos del array y los insertamos en el heap
-    public MaxHeapActualizable(T[] listaDeElementos){ 
+    @SuppressWarnings("unchecked")
+    public MaxHeapActualizable(T[] listaDeElementos) {
         this.cola = new MaxHeapActualizable.Handle[listaDeElementos.length];
         for (int i = 0; i < listaDeElementos.length; i++) {
             this.cola[i] = new Handle(listaDeElementos[i], i);
@@ -74,11 +50,17 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
 
         // El algoritmo de heapify ignora las hojas y arranca desde abajo hacia arriba
         // Entonces, la cuenta es ((this.cardinal)-2)/2 (DIVISION ENTERA), que es el padre del último elemento
-        for (int i = ((this.cardinal)-2)/2; i >= 0; i--){
+        for (int i = ((this.cardinal) - 2) / 2; i >= 0; i--) {
             this.sift_down(i); // Hacer heapify es hacer sift down desde el final hasta la raiz
         }
     }
 
+    private int obtenerReferencia(int indice) {
+        if (indice < 0 || indice >= map.length) {
+            throw new RuntimeException("Referencia fuera de rango!");
+        }
+        return map[indice].referencia;
+    }
 
     /**
      * Devuelve el elemento máximo (raíz del heap).
@@ -87,41 +69,40 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
      * @return El elemento máximo del heap
      * @throws RuntimeException si el heap está vacío
      */
-    public T raiz(){
-        if (cardinal > 0){
+    public T raiz() {
+        if (cardinal > 0) {
             return this.cola[0].valor;
         }
         throw new RuntimeException("No hay elementos insertados en el heap!");
     }
 
-
     /**
      * Reordena el heap hacia abajo desde el índice dado.
      * Complejidad: O(log n)
      *
-     * @param index Índice desde donde empezar a reordenar
-    */
-    public void sift_down(int indice){
+     * @param indice Índice desde donde empezar a reordenar
+     */
+    public void sift_down(int indice) {
         indice = obtenerReferencia(indice);
-        
+
         while (true) {
-            int hijoIzquierdo = 2*indice+1;
-            int hijoDerecho = 2*indice+2;
-            
+            int hijoIzquierdo = 2 * indice + 1;
+            int hijoDerecho = 2 * indice + 2;
+
             // si no tenemos hijo izquierdo, llegué al final
             if (hijoIzquierdo >= cardinal) {
                 break;
             }
-            
+
             int max = hijoIzquierdo;
             if (hijoDerecho < cardinal && cola[hijoDerecho].compareTo(cola[hijoIzquierdo]) >= 0) {
                 max = hijoDerecho;
             }
-    
+
             if (cola[indice].compareTo(cola[max]) >= 0) {
                 break;
             }
-    
+
             this.intercambiar(indice, max);
             indice = max;
         }
@@ -131,22 +112,21 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
      * Reordena el heap hacia arriba desde el índice dado.
      * Complejidad: O(log n)
      *
-     * @param index Índice desde donde empezar a reordenar
+     * @param indice Índice desde donde empezar a reordenar
      */
-    public void sift_up(int indice){
+    public void sift_up(int indice) {
         indice = obtenerReferencia(indice);
-        if (indice == 0){
+        if (indice == 0) {
             return;
         }
         while (indice > 0) {
-            int padre = (indice-1)/2;
+            int padre = (indice - 1) / 2;
             if (cola[indice].compareTo(cola[padre]) <= 0) {
                 break;
             }
             this.intercambiar(indice, padre);
             indice = padre;
         }
-        return;
     }
 
     /**
@@ -156,16 +136,15 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
      * @param index1 Índice del primer elemento
      * @param index2 Índice del segundo elemento
      */
-    private void intercambiar(int index1, int index2){
+    private void intercambiar(int index1, int index2) {
         Handle aux = cola[index1];
         cola[index1] = cola[index2];
         cola[index2] = aux;
-        
+
         map[cola[index1].referencia].referencia = index1;
         map[cola[index2].referencia].referencia = index2;
 
     }
-
 
     /**
      * Extrae y devuelve el elemento máximo del heap.
@@ -175,7 +154,7 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
      * @throws RuntimeException si el heap está vacío
      */
     public T extractMax() {
-        if (cardinal == 0){
+        if (cardinal == 0) {
             throw new RuntimeException("Heap vacio");
         }
         T max = cola[0].valor;
@@ -192,6 +171,7 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
         return cardinal;
     }
 
+    @SuppressWarnings("unchecked")
     public void redimensionar() {
         int length = cola.length;
         if (length == 0) {
@@ -199,12 +179,12 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
         }
         Handle[] nuevaCola = new MaxHeapActualizable.Handle[length * 2];
         Handle[] nuevoMap = new MaxHeapActualizable.Handle[length * 2];
-        
+
         for (int i = 0; i < cola.length; i++) {
             nuevaCola[i] = cola[i];
             nuevoMap[i] = map[i];
         }
-        
+
         cola = nuevaCola;
         map = nuevoMap;
     }
@@ -213,13 +193,35 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
         if (cardinal >= cola.length) {
             redimensionar();
         }
-        
+
         cola[cardinal] = new Handle(valor, cardinal);
         map[cardinal] = new Handle(valor, cardinal);
-        
+
         sift_up(cardinal);
-        
+
         cardinal++;
     }
-    
+
+    private class Handle implements Comparable<Handle> {
+        final T valor;
+        private int referencia;
+
+        public Handle(T valor, int nuevaReferencia) {
+            this.valor = valor;
+            this.referencia = nuevaReferencia;
+        }
+
+        public int referencia() {
+            return this.referencia;
+        }
+
+        public T obtener() {
+            return this.valor;
+        }
+
+        public int compareTo(Handle otro) {
+            return this.valor.compareTo(otro.valor);
+        }
+    }
+
 }
