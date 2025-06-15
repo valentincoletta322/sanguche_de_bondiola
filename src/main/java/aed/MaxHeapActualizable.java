@@ -18,7 +18,7 @@ agregar una lista mas que nos permita guardar las referencias hacia el heap:
     }
     
     Además habría que redefinir todos los metodos, la lógica es completamente distinta, entonces preferimos llamarlo MaxHeapActualizable y
-hacer tests con esa clase.
+hacer tests con esa clase. Con esta clase se pueden guardar cualquier tipo de elemento y no afecta a la lógica de ordenamiento.
  */
 
 public class MaxHeapActualizable<T extends Comparable<T>> {
@@ -193,8 +193,12 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
     }
 
     public void redimensionar() {
-        Handle[] nuevaCola = new MaxHeapActualizable.Handle[cola.length * 2];
-        Handle[] nuevoMap = new MaxHeapActualizable.Handle[map.length * 2];
+        int length = cola.length;
+        if (length == 0) {
+            length = 1; // Si esta vacio le doy 2 de espacio.
+        }
+        Handle[] nuevaCola = new MaxHeapActualizable.Handle[length * 2];
+        Handle[] nuevoMap = new MaxHeapActualizable.Handle[length * 2];
         
         for (int i = 0; i < cola.length; i++) {
             nuevaCola[i] = cola[i];
@@ -205,13 +209,13 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
         map = nuevoMap;
     }
 
-    public void agregar(T elemento) {
+    public void agregar(T valor) {
         if (cardinal >= cola.length) {
             redimensionar();
         }
         
-        cola[cardinal] = new Handle(elemento, cardinal);
-        map[cardinal] = cola[cardinal];
+        cola[cardinal] = new Handle(valor, cardinal);
+        map[cardinal] = new Handle(valor, cardinal);
         
         sift_up(cardinal);
         
