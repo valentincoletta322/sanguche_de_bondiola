@@ -24,6 +24,44 @@ class ListaEnlazadaTests {
     }
 
     @Test
+    void obtenerElementoOutOfIndex() {
+        ListaEnlazada<Integer> lista = new ListaEnlazada<>();
+        lista.agregar(3);
+        lista.agregar(1);
+
+        try {
+            lista.obtener(31);
+            fail("Should have thrown IndexOutOfBoundsException for index 31");
+        } catch (IndexOutOfBoundsException e) {
+            // Optionally verify message
+            assertEquals("Index out of range: 31", e.getMessage());
+        }
+
+        try {
+            lista.obtener(-1);
+            fail("Should have thrown IndexOutOfBoundsException for index -1");
+        } catch (IndexOutOfBoundsException e) {
+            assertEquals("Index out of range: -1", e.getMessage());
+        }
+
+        try {
+            new ListaEnlazada<Integer>().obtener(0);
+            fail("Should have thrown IndexOutOfBoundsException for empty list");
+        } catch (IndexOutOfBoundsException e) {
+            assertEquals("Index out of range: 0", e.getMessage());
+        }
+    }
+
+    @Test
+    void obtenerElementoValidIndex() {
+        ListaEnlazada<Integer> lista = new ListaEnlazada<>();
+        lista.agregar(3);
+        lista.agregar(1);
+        assertEquals(3, lista.obtener(0));
+        assertEquals(1, lista.obtener(1));
+    }
+
+    @Test
     void agregarVariosElementosAtras() {
         ListaEnlazada<Character> lista = new ListaEnlazada<>();
 

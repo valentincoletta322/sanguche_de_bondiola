@@ -64,11 +64,13 @@ public class ListaEnlazada<T> {
      * @return Elemento en la posición i
      */
     public T obtener(int i) {
+        if (i < 0 || i >= longitud) {
+            throw new IndexOutOfBoundsException("Index out of range: " + i);
+        }
         Nodo res = this.primero;
         for (int n = 0; n < i; n++) {
             res = res.siguiente;
         }
-
         return res.valor;
     }
 
