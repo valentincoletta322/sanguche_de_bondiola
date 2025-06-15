@@ -25,7 +25,17 @@ public class Bloque {
         }
     }
 
-
+    /**
+     * Constructor del bloque.
+     * Crea una copia de las transacciones para mantener la inmutabilidad.
+     * Utiliza un MaxHeap de 'Handles' para poder encontrar la transacción de mayor valor en O(1)
+     * y extraerla en O(log n_b). El Handle contiene una referencia (índice) a la transacción
+     * en el arreglo original. También pre-calcula la suma y cantidad de transacciones para que
+     * montoMedioUltimoBloque() sea O(1).
+     * Complejidad: O(n_b), donde n_b es la cantidad de transacciones.
+     *
+     * @param transacciones Arreglo de transacciones del bloque
+     */
     public Bloque(Transaccion[] transacciones, int id){
         this.id = id;
         this.arrayTransacciones = new HandleTransacciones[transacciones.length]; // Pedir memoria O(n)
@@ -51,16 +61,36 @@ public class Bloque {
         this.heapTransacciones = new MaxHeapActualizable<HandleTransacciones>(this.arrayTransacciones); // O(n)
     }
     
-    //O(1)
+    /**
+     * Devuelve la suma de los montos de las transacciones no de creación.
+     * Complejidad: O(1)
+     *
+     * @return Suma de montos
+     */
     public int sumaMontos() {
         return this.sumaMontos;
     }
-    //O(1)
+
+
+    /**
+     * Devuelve la cantidad de transacciones no de creación.
+     * Complejidad: O(1)
+     *
+     * @return Cantidad de transacciones
+     */
     public int cantidadTransacciones() {
         return this.cantidadTransacciones;
     }
     
-    // O(n): Recorre el array de transacciones y devuelve las que estan en la lista
+    
+    /**
+     * Devuelve una copia de las transacciones no eliminadas del bloque.
+     * Complejidad: O(n_b)
+     *
+     * @return Arreglo de transacciones no eliminadas
+     */
+
+    // O(n): Porque recorre el array de transacciones y las agrega a una lista
     public Transaccion[] obtenerTransacciones(){
         ArrayList<Transaccion> transacciones = new ArrayList<>(this.cantidadTransacciones);
         // Con esto me aseguro de tener el espacio necesario y no tener que volver a pedir memoria
@@ -79,12 +109,27 @@ public class Bloque {
         return toArray;
     }
 
+    /**
+     * Devuelve la transacción de mayor valor del bloque.
+     * Complejidad: O(1)
+     *
+     * @return Transacción de mayor valor
+     */
     public Transaccion obtenerMaximo(){
         return heapTransacciones.raiz().transaccionApuntada;
     }
 
 
-    // O(log(n)): Hace extraerMax que llama a un sift_down O(log(n)), el resto es O(1)
+    /**
+     * Hackea la transacción de mayor valor, eliminándola del bloque y actualizando los montos.
+     * Utiliza el heap para encontrar y extraer el máximo (llama a un sift_down O(log(n)).
+     * El resto es O(1):
+     * Marca la transacción como eliminada y actualiza los totales
+     * de montos y cantidad para mantener la consistencia.
+     * Complejidad: O(log n_b)
+     *
+     * @return Transacción hackeada
+     */
     public Transaccion extraerMaximaTransaccion() {
         if (this.arrayTransacciones.length == 0) {
             throw new RuntimeException("No hay transacciones en el bloque!");
