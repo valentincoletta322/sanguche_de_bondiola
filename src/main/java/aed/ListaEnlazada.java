@@ -74,9 +74,43 @@ public class ListaEnlazada<T> {
         return res.valor;
     }
 
+    public void eliminar(int i) {
+        if (i < 0 || i >= longitud) {
+            throw new RuntimeException("Indice fuera de rango!");
+        }
+        else if (i == 0) {
+            primero = primero.siguiente;
+            if (longitud == 1) {
+                ultimo = null;
+            }
+        }
+        else {
+            Nodo actual = primero;
+            for (int j = 0; j < i-1; j++) {
+                actual = actual.siguiente;
+            }
+            Nodo eliminado = actual.siguiente;
+            actual.siguiente = eliminado.siguiente;
+            if(eliminado == ultimo) {
+                ultimo = actual;
+            }
+        }
+        longitud--;
+    }
+
+    public void modificarPosicion(int i, T nuevoElem) {
+        Nodo actual = primero;
+        if (i < 0 || i >= longitud) {
+            throw new RuntimeException("Indice fuera de rango!");
+        }
+        for (int j = 0; j < i; j++) {
+            actual = actual.siguiente;
+        }
+        actual.valor = nuevoElem;
+    }
+
     private class Nodo {
-        private final T valor;
-        @SuppressWarnings("unused")
+        private T valor;
         private Nodo siguiente;
 
         public Nodo(T nuevoValor) {
