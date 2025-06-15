@@ -102,31 +102,51 @@ public class Berretacoin {
         return suma / cantidad;
     }
 
+    /**
+     * Hackea la transacción de mayor valor del último bloque, revirtiendo sus efectos.
+     * Complejidad: O(log n_b + log P)
+     */
     public void hackearTx(){
         Bloque ultimoBloque = this.listaDeBloques.ultimo();
         Transaccion maximaTransaccion = ultimoBloque.extraerMaximaTransaccion(); // O(log(n_b)), porque extraigo el max en O(1) y hago sift down O(log(n_b))
 
         Usuario vendedorActual = usuarios[maximaTransaccion.id_vendedor()-1].usuarioApuntado;
-        vendedorActual.setSaldo(vendedorActual.getSaldo() - maximaTransaccion.monto());
-        heapDeSaldos.sift_down(usuarios[maximaTransaccion.id_vendedor()-1].referencia); // O(log(P)), sift down en el heap de saldos
+        long calculoSaldoVendedor = vendedorActual.getSaldo() - maximaTransaccion.monto();
+        vendedorActual.setSaldo(calculoSaldoVendedor);
+
+        int referenciaVendedor = usuarios[maximaTransaccion.id_vendedor()-1].referencia;
+        heapDeSaldos.sift_down(referenciaVendedor); // O(log(P)), sift down en el heap de saldos
 
         if (maximaTransaccion.id_comprador() != 0) {
             Usuario compradorActual = usuarios[maximaTransaccion.id_comprador()-1].usuarioApuntado;
-            compradorActual.setSaldo(compradorActual.getSaldo() + maximaTransaccion.monto());
-            heapDeSaldos.sift_up(usuarios[maximaTransaccion.id_comprador()-1].referencia); // O(log(P)), sift up en el heap de saldos
+            
+            long calculoSaldoComprador = compradorActual.getSaldo() + maximaTransaccion.monto();
+            compradorActual.setSaldo(calculoSaldoComprador);
+            
+            int referenciaComprador = usuarios[maximaTransaccion.id_comprador()-1].referencia;
+            heapDeSaldos.sift_up(referenciaComprador); // O(log(P)), sift up en el heap de saldos
         }
     }
+
 
     // Funcion auxiliar de complejidad O(log(P)), que actualiza los saldos de los usuarios involucrados en una transacción.
     public void actualizarSaldos(Transaccion transaccion){
         Usuario vendedorActual = usuarios[transaccion.id_vendedor()-1].usuarioApuntado;
-        vendedorActual.setSaldo(vendedorActual.getSaldo() + transaccion.monto());
         
-        heapDeSaldos.sift_up(usuarios[transaccion.id_vendedor()-1].referencia); // O(log(P)), sift up en el heap de saldos
+        long calculoSaldoVendedor = vendedorActual.getSaldo() + transaccion.monto();
+        vendedorActual.setSaldo(calculoSaldoVendedor);
+        
+        int referenciaVendedor = usuarios[transaccion.id_vendedor()-1].referencia;
+        heapDeSaldos.sift_up(referenciaVendedor); // O(log(P)), sift up en el heap de saldos
+        
         if (transaccion.id_comprador() != 0){
             Usuario compradorActual = usuarios[transaccion.id_comprador()-1].usuarioApuntado;
-            compradorActual.setSaldo(compradorActual.getSaldo() - transaccion.monto());
-            heapDeSaldos.sift_down(usuarios[transaccion.id_comprador()-1].referencia); // O(log(P)), sift down en el heap de saldos
+            
+            long calculoSaldoComprador = compradorActual.getSaldo() - transaccion.monto();
+            compradorActual.setSaldo(calculoSaldoComprador);
+            
+            int referenciaComprador = usuarios[transaccion.id_comprador()-1].referencia;
+            heapDeSaldos.sift_down(referenciaComprador); // O(log(P)), sift down en el heap de saldos
         }
 
     }
