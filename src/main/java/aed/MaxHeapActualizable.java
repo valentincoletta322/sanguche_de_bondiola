@@ -37,16 +37,13 @@ public class MaxHeapActualizable<T extends Comparable<T>> {
     @SuppressWarnings("unchecked")
     public MaxHeapActualizable(T[] listaDeElementos) {
         this.cola = new MaxHeapActualizable.Handle[listaDeElementos.length];
+        this.map = new MaxHeapActualizable.Handle[listaDeElementos.length];
         for (int i = 0; i < listaDeElementos.length; i++) {
             this.cola[i] = new Handle(listaDeElementos[i], i);
-        }
-
-        this.map = new MaxHeapActualizable.Handle[listaDeElementos.length];
-        this.cardinal = listaDeElementos.length;
-
-        for (int i = 0; i < listaDeElementos.length; i++) {
             this.map[i] = new Handle(listaDeElementos[i], i);
         }
+
+        this.cardinal = listaDeElementos.length;
 
         // El algoritmo de heapify ignora las hojas y arranca desde abajo hacia arriba
         // Entonces, la cuenta es ((this.cardinal)-2)/2 (DIVISION ENTERA), que es el padre del último elemento
