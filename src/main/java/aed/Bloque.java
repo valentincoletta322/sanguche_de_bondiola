@@ -82,9 +82,7 @@ public class Bloque {
         }
 
         // Sumando las complejidades:  O(n) + O(n) = O(2n) => O(n)
-        Transaccion[] toArray = new Transaccion[transacciones.size()];
-        toArray = transacciones.toArray(toArray);
-        return toArray;
+        return transacciones.toArray(new Transaccion[0]);
     }
 
     /**
